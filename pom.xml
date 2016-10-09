@@ -59,9 +59,9 @@
   </modules>
 
   <scm>
-    <connection>scm:git:git@github.com:jorgeGaitan95/sonarQM-plugin.git</connection>
-    <developerConnection>scm:git:git@github.com:jorgeGaitan95/sonarQM-plugin.git</developerConnection>
-    <url>https://github.com/jorgeGaitan95/sonarQM-plugin</url>
+    <connection>scm:git:git@github.com:jorgeGaitan95/QM-plugin.git</connection>
+    <developerConnection>scm:git:git@github.com:jorgeGaitan95/QM-plugin.git</developerConnection>
+    <url>https://github.com/jorgeGaitan95/QM-plugin</url>
     <tag>HEAD</tag>
   </scm>
   <issueManagement>

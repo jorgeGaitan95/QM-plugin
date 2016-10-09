@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Built-By: jorge
+Implementation-Build: 
+Build-Time: 2016-10-09T09:48:45+0000
+Version: 1.5-Model
+Build-Jdk: 1.8.0_101
+Created-By: Maven Integration for Eclipse
+
