@@ -49,7 +49,6 @@ public class Variables {
 	public  String CTT_SYSTEM_TASK;
 	public  String CTT_USER_TASK;
 	public  String CTT_INTERACTION_TASK;
-	//hola, este es un comentario prueba
 	
 	private static Variables instance;
 	//nombre etiqueta diagrama clase
