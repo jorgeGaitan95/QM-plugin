@@ -1,0 +1,6 @@
+org/sonar/xml/XmlParserConfiguration$1.class
+org/sonar/xml/XmlParserConfiguration$Builder.class
+org/sonar/xml/package-info.class
+org/sonar/xml/XmlParserConfiguration.class
+org/sonar/xml/api/XmlGrammar.class
+org/sonar/xml/api/package-info.class
