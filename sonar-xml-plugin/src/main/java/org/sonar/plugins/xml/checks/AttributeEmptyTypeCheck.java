@@ -46,12 +46,8 @@ public class AttributeEmptyTypeCheck extends AbstractXmlCheck {
 			if(nodoAux.getNodeType()==Node.ELEMENT_NODE&&nodoAux.getNodeName().equals(getVariables().NODE_ATTRIBUTE_CLASS))
 			{
 				NamedNodeMap attribute=nodoAux.getAttributes();
-				if(attribute.getNamedItem(getVariables().ATTRIBUTE_TYPE_ATTRIBUTENODE)!=null){
-					String tipo=attribute.getNamedItem(getVariables().ATTRIBUTE_TYPE_ATTRIBUTENODE).getNodeValue();
-					if(tipo.equals("")||tipo==null)
-						createViolation(getWebSourceCode().getLineForNode(nodoAux), MESSAGE);
-				}
-				else{
+				Node type=attribute.getNamedItem(getVariables().ATTRIBUTE_TYPE_ATTRIBUTENODE);
+				if(type==null||"".equals(type.getNodeValue())){
 					createViolation(getWebSourceCode().getLineForNode(nodoAux), MESSAGE);
 				}
 			}
