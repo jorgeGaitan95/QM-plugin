@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="org.sonar.plugins.xml.checks.XmlSchemaCheckTest" time="1.375" tests="11" errors="0" skipped="0" failures="0">
+<testsuite name="org.sonar.plugins.xml.checks.XmlSchemaCheckTest" time="1.035" tests="11" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.runtime.name" value="Java(TM) SE Runtime Environment"/>
     <property name="sun.boot.library.path" value="/usr/lib/jvm/java-8-oracle/jre/lib/amd64"/>
     <property name="java.vm.version" value="25.101-b13"/>
     <property name="java.vm.vendor" value="Oracle Corporation"/>
-    <property name="maven.multiModuleProjectDirectory" value="/home/jorge/Programacion/SONAR/PLUGINS/sonar-xml-master"/>
+    <property name="maven.multiModuleProjectDirectory" value="/home/jorge/Programacion/SONAR/PLUGINS/QM-plugin"/>
     <property name="java.vendor.url" value="http://java.oracle.com/"/>
     <property name="path.separator" value=":"/>
     <property name="guice.disable.misplaced.annotation.check" value="true"/>
@@ -15,7 +15,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="sun.os.patch.level" value="unknown"/>
     <property name="java.vm.specification.name" value="Java Virtual Machine Specification"/>
-    <property name="user.dir" value="/home/jorge/Programacion/SONAR/PLUGINS/sonar-xml-master"/>
+    <property name="user.dir" value="/home/jorge/Programacion/SONAR/PLUGINS/QM-plugin"/>
     <property name="java.runtime.version" value="1.8.0_101-b13"/>
     <property name="java.awt.graphicsenv" value="sun.awt.X11GraphicsEnvironment"/>
     <property name="java.endorsed.dirs" value="/usr/lib/jvm/java-8-oracle/jre/lib/endorsed"/>
@@ -59,15 +59,15 @@
     <property name="sun.desktop" value="gnome"/>
     <property name="sun.cpu.isalist" value=""/>
   </properties>
-  <testcase name="missing_schema" classname="org.sonar.plugins.xml.checks.XmlSchemaCheckTest" time="0.039"/>
-  <testcase name="schema_as_external_path" classname="org.sonar.plugins.xml.checks.XmlSchemaCheckTest" time="0.573"/>
-  <testcase name="test_file_pattern" classname="org.sonar.plugins.xml.checks.XmlSchemaCheckTest" time="0.014"/>
-  <testcase name="validate_maven_pom" classname="org.sonar.plugins.xml.checks.XmlSchemaCheckTest" time="0.069"/>
-  <testcase name="violate_auto_detect_check" classname="org.sonar.plugins.xml.checks.XmlSchemaCheckTest" time="0.172"/>
-  <testcase name="no_issue_on_corrupted_file" classname="org.sonar.plugins.xml.checks.XmlSchemaCheckTest" time="0.005"/>
-  <testcase name="violate_builtin_xhtml_schema_check" classname="org.sonar.plugins.xml.checks.XmlSchemaCheckTest" time="0.126"/>
-  <testcase name="violate_facelets_schema" classname="org.sonar.plugins.xml.checks.XmlSchemaCheckTest" time="0.059"/>
-  <testcase name="violate_jsf_schema" classname="org.sonar.plugins.xml.checks.XmlSchemaCheckTest" time="0.099"/>
-  <testcase name="violate_local_xml_schema_check" classname="org.sonar.plugins.xml.checks.XmlSchemaCheckTest" time="0.021"/>
-  <testcase name="violate_strict_html1_check" classname="org.sonar.plugins.xml.checks.XmlSchemaCheckTest" time="0.198"/>
+  <testcase name="missing_schema" classname="org.sonar.plugins.xml.checks.XmlSchemaCheckTest" time="0.082"/>
+  <testcase name="schema_as_external_path" classname="org.sonar.plugins.xml.checks.XmlSchemaCheckTest" time="0.384"/>
+  <testcase name="test_file_pattern" classname="org.sonar.plugins.xml.checks.XmlSchemaCheckTest" time="0.012"/>
+  <testcase name="validate_maven_pom" classname="org.sonar.plugins.xml.checks.XmlSchemaCheckTest" time="0.051"/>
+  <testcase name="violate_auto_detect_check" classname="org.sonar.plugins.xml.checks.XmlSchemaCheckTest" time="0.139"/>
+  <testcase name="no_issue_on_corrupted_file" classname="org.sonar.plugins.xml.checks.XmlSchemaCheckTest" time="0.003"/>
+  <testcase name="violate_builtin_xhtml_schema_check" classname="org.sonar.plugins.xml.checks.XmlSchemaCheckTest" time="0.154"/>
+  <testcase name="violate_facelets_schema" classname="org.sonar.plugins.xml.checks.XmlSchemaCheckTest" time="0.031"/>
+  <testcase name="violate_jsf_schema" classname="org.sonar.plugins.xml.checks.XmlSchemaCheckTest" time="0.056"/>
+  <testcase name="violate_local_xml_schema_check" classname="org.sonar.plugins.xml.checks.XmlSchemaCheckTest" time="0.008"/>
+  <testcase name="violate_strict_html1_check" classname="org.sonar.plugins.xml.checks.XmlSchemaCheckTest" time="0.115"/>
 </testsuite>

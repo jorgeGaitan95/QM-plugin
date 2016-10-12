@@ -89,7 +89,10 @@ public class CheckRepository {
       new RelationConnectedCheck(),
       new ReservedWordsToNameElementsCheck(),
       new AttributeswithInvalidTypeCheck(), 
-      new TreeLuytenCheck());
+      new TreeLuytenCheck(),
+      new PrimaryKeyCheck(),
+      new NullAttributePrimaryKeyCheck(),
+      new RelationsManyToManyCheck());
   }
 
   public static List<Class> getCheckClasses() {

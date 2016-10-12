@@ -93,6 +93,7 @@ public class Variables {
 	
 	//E-R DIAGRAM
 	public String ATTRIBUTE_TIPOATRIBUTO="tipo";
+	public String XSITYPE_ER="xsi:type";
     public String NODE_ATTRIBUTE_ER="listAtributes";
 	public String ER_DIAGRAM_NAME="er:Diagram";
 	public String NODE_TABLE="listTable";
@@ -101,11 +102,17 @@ public class Variables {
 	public String RELATION_ONETOONE="er:OneToOne";
 	public String RELATION_ONETOONEOPTIONAL="er:OneToOneOptional";
 	public String RELATION_ONETOMANYOPTIONAL="er:OneToManyOptional";
+	//PERMITE DETERMINAR SI EL ATRIBUTO ES CLAVE PRIMARIA, FORANEA O UNICA
+	public String PROPIEDAD_ATTRIBUTE="propiedad";
 	public String[] ER_RESERVED_WORDS={"void","int","if","public","static","for","class"};
 	//nombreAtributo ER
 	public  String ATTRIBUTE_NAME_ATRIBUTE_TABLE="nombreAtributo";
 	//nombreAtributo ER
 	public  String ATTRIBUTE_NAME_TABLE="nombreTabla";
+	
+	public int MAX_MANY_TO_MANY_RELATIONS=3;
+	public int MAX_COMPLEX_ESTRUCTURE=2;
+	
 	//BPMN CONSTANTES
 	public String BPNM_MODEL_PROCESS="model:process";
 	

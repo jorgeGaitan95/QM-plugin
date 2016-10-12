@@ -1,4 +1,4 @@
-/home/jorge/Programacion/SONAR/PLUGINS/sonar-xml-master/xml-squid/src/main/java/org/sonar/xml/api/package-info.java
-/home/jorge/Programacion/SONAR/PLUGINS/sonar-xml-master/xml-squid/src/main/java/org/sonar/xml/XmlParserConfiguration.java
-/home/jorge/Programacion/SONAR/PLUGINS/sonar-xml-master/xml-squid/src/main/java/org/sonar/xml/api/XmlGrammar.java
-/home/jorge/Programacion/SONAR/PLUGINS/sonar-xml-master/xml-squid/src/main/java/org/sonar/xml/package-info.java
+/home/jorge/Programacion/SONAR/PLUGINS/QM-plugin/xml-squid/src/main/java/org/sonar/xml/package-info.java
+/home/jorge/Programacion/SONAR/PLUGINS/QM-plugin/xml-squid/src/main/java/org/sonar/xml/XmlParserConfiguration.java
+/home/jorge/Programacion/SONAR/PLUGINS/QM-plugin/xml-squid/src/main/java/org/sonar/xml/api/package-info.java
+/home/jorge/Programacion/SONAR/PLUGINS/QM-plugin/xml-squid/src/main/java/org/sonar/xml/api/XmlGrammar.java
