@@ -23,6 +23,7 @@ import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
 import org.w3c.dom.Document;
+import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
 /**
@@ -53,9 +54,22 @@ public class EmptyTableCheck extends AbstractXmlCheck{
 		{
 			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().ER_DIAGRAM_NAME))
 			{
-				validateTable(child);
+				if(getVariables().VALIDATE_ER_BY_TYPE){
+					isNodeValid(child);
+				}
+				else
+					validateTable(child);
 			}
+
 		}
+	}
+
+	private void isNodeValid(Node node){
+		NamedNodeMap attribute=node.getAttributes();
+		Node type=attribute.getNamedItem(getVariables().attributeTypeERDiagram);
+		if(type!=null&&getVariables().nodeTypeERDiagram.equals(type.getNodeValue()))
+			validateTable(node);
+
 	}
 	@Override
 	public void validate(XmlSourceCode xmlSourceCode) {

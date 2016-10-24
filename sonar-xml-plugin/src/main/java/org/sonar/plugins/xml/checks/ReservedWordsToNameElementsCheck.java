@@ -89,12 +89,23 @@ public class ReservedWordsToNameElementsCheck extends AbstractXmlCheck {
 		{
 			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().ER_DIAGRAM_NAME))
 			{
+				if(getVariables().VALIDATE_ER_BY_TYPE){
+					isNodeValid(child);
+				}
+				else
 					validateAttributeType(child);
 			}
-			
+
 		}
 	}
 
+	private void isNodeValid(Node node){
+		NamedNodeMap attribute=node.getAttributes();
+		Node type=attribute.getNamedItem(getVariables().attributeTypeERDiagram);
+		if(type!=null&&getVariables().nodeTypeERDiagram.equals(type.getNodeValue()))
+			validateAttributeType(node);
+
+	}
 	
 	@Override
 	public void validate(XmlSourceCode xmlSourceCode) {

@@ -60,9 +60,22 @@ public class AttributeTypeCheck extends AbstractXmlCheck{
 		{
 			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().ER_DIAGRAM_NAME))
 			{
-				validateTableName(child);
+				if(getVariables().VALIDATE_ER_BY_TYPE){
+					isNodeValid(child);
+				}
+				else
+					validateTableName(child);
 			}
+
 		}
+	}
+
+	private void isNodeValid(Node node){
+		NamedNodeMap attribute=node.getAttributes();
+		Node type=attribute.getNamedItem(getVariables().attributeTypeERDiagram);
+		if(type!=null&&getVariables().nodeTypeERDiagram.equals(type.getNodeValue()))
+			validateTableName(node);
+
 	}
 	@Override
 	public void validate(XmlSourceCode xmlSourceCode) {

@@ -39,7 +39,7 @@ public class AttributeValidTypeCheck extends AbstractXmlCheck{
 public static final String MESSAGE="Chectk that the Attribute have a valid type";
 	
 	private boolean isTipoValido(String tipoNodo){
-		if(tipoNodo.equals("String")||tipoNodo.equals("Integer")||tipoNodo.equals("char")||tipoNodo.equals("boolean")||
+		if(tipoNodo.equals("String")||tipoNodo.equals("Number")||tipoNodo.equals("Character")||tipoNodo.equals("boolean")||
 			tipoNodo.equals("float")||tipoNodo.equals("Double")||tipoNodo.equals("Date")){
 				return true;
 		}else
@@ -54,10 +54,12 @@ public static final String MESSAGE="Chectk that the Attribute have a valid type"
 			if(nodoAux.getNodeType()==Node.ELEMENT_NODE&&nodoAux.getNodeName().equals(getVariables().NODE_ATTRIBUTE_ER))
 			{
 				NamedNodeMap attribute=nodoAux.getAttributes();
-				if(attribute.getNamedItem(getVariables().ATTRIBUTE_TYPE_ATTRIBUTENODE)!=null){
-					String tipo=attribute.getNamedItem(getVariables().ATTRIBUTE_TYPE_ATTRIBUTENODE).getNodeValue();
+				if(attribute.getNamedItem(getVariables().ATTRIBUTE_TIPOATRIBUTO)!=null){
+					String tipo=attribute.getNamedItem(getVariables().ATTRIBUTE_TIPOATRIBUTO).getNodeValue();
 					if(tipo.equals("")||tipo==null||!isTipoValido(tipo))
 						createViolation(getWebSourceCode().getLineForNode(nodoAux), MESSAGE);
+				}else{
+					createViolation(getWebSourceCode().getLineForNode(nodoAux), MESSAGE);
 				}
 			}
 		}
@@ -75,10 +77,22 @@ public static final String MESSAGE="Chectk that the Attribute have a valid type"
 		{
 			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().ER_DIAGRAM_NAME))
 			{
+				if(getVariables().VALIDATE_ER_BY_TYPE){
+					isNodeValid(child);
+				}
+				else
 					validateAttributeType(child);
 			}
-			
+
 		}
+	}
+
+	private void isNodeValid(Node node){
+		NamedNodeMap attribute=node.getAttributes();
+		Node type=attribute.getNamedItem(getVariables().attributeTypeERDiagram);
+		if(type!=null&&getVariables().nodeTypeERDiagram.equals(type.getNodeValue()))
+			validateAttributeType(node);
+
 	}
 	@Override
 	public void validate(XmlSourceCode xmlSourceCode) {

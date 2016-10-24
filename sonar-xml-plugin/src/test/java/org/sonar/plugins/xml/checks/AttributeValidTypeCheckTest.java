@@ -27,24 +27,28 @@ public class AttributeValidTypeCheckTest extends AbstractCheckTester{
 	Variables var= Variables.getInstance();
 	@Test
 	  public void checkClassName() throws IOException {
-	    XmlSourceCode sourceCode = parseAndCheck(
-	      createTempFile(
-					"<er:Diagram xmi:version='2.0' xmlns:xmi='http://www.omg.org/XMI' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:er='http://er'>"
-							  +"<listTable nombreTabla=''>"
-							    +"<listAtributes nombreAtributo='Cedula' tipo='' propiedad='K'/>"
-							  +"</listTable>"
-							  +"<listTable nombreTabla='Programa'>"
-							    +"<listAtributes nombreAtributo='NombrePrograma' tipo='String' propiedad='K'/>"
-							    +"<listAtributes nombreAtributo='NombrePrograma2' tipo='String' propiedad='N'/>"
-							    +"<listAtributes nombreAtributo='NombrePrograma3' tipo='String' propiedad='N'/>"
-							  +"</listTable>"
-							  +"<listRelation xsi:type='er:ManyToMany' source='//@listTable.1' target='//@listTable.0'/>"
-							  +"<listRelation xsi:type='er:OneToOne' source='//@listTable.0' target='//@listTable.1'/>"
-							  +"<listRelation xsi:type='er:OneToOneOptional' source='//@listTable.0' target='//@listTable.1'/>"
-							  +"<listRelation xsi:type='er:OneToManyOptional' source='//@listTable.0' target='//@listTable.1'/>"
-							+"</er:Diagram>"
-
-	    		  ),
+		XmlSourceCode sourceCode = parseAndCheck(
+				createTempFile(
+						"<herramienta:ModelFactory xmi:version='2.0' xmlns:xmi='http://www.omg.org/XMI' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:herramienta='http:///herramienta.ecore' xmlns:herramienta.diagrams.domain='http:///herramienta/diagrams/domain.ecore' xmlns:herramienta.diagrams.entidadrelacion='http:///herramienta/diagrams/entidadrelacion.ecore' xmlns:herramienta.diagrams.interaction='http:///herramienta/diagrams/interaction.ecore' xmlns:herramienta.diagrams.usecase.ucabstract='http:///herramienta/diagrams/usecase/ucabstract.ecore' xmlns:herramienta.diagrams.usecase.ucconcret='http:///herramienta/diagrams/usecase/ucconcret.ecore'>"
+								+"<itsPackage xsi:type='herramienta.diagrams.entidadrelacion:EntityDiagram'>"
+								+"<listEntity name='Persona'>"
+								+"<listAttribute name='Cedula' type='Number' propiedad='KEY'/>"
+								+"</listEntity>"
+								+"<listEntity nombreTabla='Programa'>"
+								+"<listAttribute name='' type='String' propiedad='KEY'/>"
+								+"<listAttribute name='NombrePrograma2' type='String' propiedad='KEY'/>"
+								+"<listAttribute name='NombrePrograma3' type='String' propiedad='N'/>"
+								+"</listEntity>"
+								+"<listEntity nombreTabla='Estudiante'>"
+								+"<listAttribute name='NombreEstudiante'  propiedad='KEY'/>"
+								+"</listEntity>"
+								+"<itsRelationEntity xsi:type='herramienta.diagrams.entidadrelacion:ManyToMany' source='//@listEntity.1' target='//@listEntity.0'/>"
+								+"<itsRelationEntity xsi:type='herramienta.diagrams.entidadrelacion:OneToOne' source='//@listEntity.0' target='//@listEntity.1'/>"
+								+"<itsRelationEntity xsi:type='herramienta.diagrams.entidadrelacion:OneToOneOptional' source='//@listEntity.0' target='//@listEntity.1'/>"
+								+"<itsRelationEntity xsi:type='herramienta.diagrams.entidadrelacion:OneToManyOptional' source='//@listEntity.0' target='//@listEntity.1'/>"
+								+"</itsPackage>"
+								+"</herramienta:ModelFactory>"						
+						),
 	      new AttributeValidTypeCheck());
 
 	    assertEquals(INCORRECT_NUMBER_OF_VIOLATIONS, 1, sourceCode.getXmlIssues().size());

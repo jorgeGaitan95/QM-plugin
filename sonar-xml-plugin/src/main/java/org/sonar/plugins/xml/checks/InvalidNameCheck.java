@@ -41,13 +41,13 @@ public class InvalidNameCheck extends AbstractXmlCheck{
 	public static final String MESSAGE="Check that element name conform to the pattern";
 	private void validateAtrribiteName(Node node){
 		for(Node sibling=node.getFirstChild();sibling!= null;sibling=sibling.getNextSibling()){
-			if(sibling.getNodeName().equals(getVariables().NODE_USE_CASE)||sibling.getNodeName().equals(getVariables().NODE_ACTOR))
+			if(sibling.getNodeName().equals(getVariables().NODE_ELEMENT_USECASE))
 			{
 				NamedNodeMap attribute=sibling.getAttributes();
 				if(attribute.getNamedItem(getVariables().ATTRIBUTE_NAME)!=null){
 					String name=attribute.getNamedItem(getVariables().ATTRIBUTE_NAME).getNodeValue();
 					if(name.equals("")||name==null &&!name.matches("^[a-zA-Z][a-zA-Z0-9]*"))
-					createViolation(getWebSourceCode().getLineForNode(sibling), MESSAGE);
+						createViolation(getWebSourceCode().getLineForNode(sibling), MESSAGE);
 				}
 			}
 		}
@@ -55,19 +55,32 @@ public class InvalidNameCheck extends AbstractXmlCheck{
 		{
 			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().USE_CASE_DIAGRAM_NAME))
 			{
-				validateAtrribiteName(child);
+				if(getVariables().VALIDATE_UC_BY_TYPE){
+					isNodeValid(child);
+				}
+				else
+					validateAtrribiteName(child);
 			}
+
 		}
+	}
+
+	private void isNodeValid(Node node){
+		NamedNodeMap attribute=node.getAttributes();
+		Node type=attribute.getNamedItem(getVariables().attributeTypeUCDiagram);
+		if(type!=null&&getVariables().nodeTypeUCDiagram.equals(type.getNodeValue()))
+			validateAtrribiteName(node);
+
 	}
 	@Override
 	public void validate(XmlSourceCode xmlSourceCode) {
 		// TODO Auto-generated method stub
 		setWebSourceCode(xmlSourceCode);
 
-	    Document document = getWebSourceCode().getDocument(false);
-	    if (document.getDocumentElement() != null) {
-	    	validateAtrribiteName(document.getDocumentElement());
-	    }
+		Document document = getWebSourceCode().getDocument(false);
+		if (document.getDocumentElement() != null) {
+			validateAtrribiteName(document.getDocumentElement());
+		}
 	}
 
 }

@@ -37,17 +37,21 @@ priority= Priority.INFO)
 @SqaleConstantRemediation("30min")
 public class NumberUseCaseCheck extends AbstractXmlCheck{
 	public static final String MESSAGE="Check that only has a few communications";
-	
+
 	private void ValidateRelationship(Node node){
 		int contador=0;
 		for(Node sibling=node.getFirstChild();sibling!= null;sibling=sibling.getNextSibling()){
-			if(sibling.getNodeName().equals(getVariables().NODE_USE_CASE))
+			if(sibling.getNodeName().equals(getVariables().NODE_ELEMENT_USECASE))
 			{
-				contador++;
-				if(contador>getVariables().NUMBER_USE_CASE)
-				{
-					createViolation(getWebSourceCode().getLineForNode(node), MESSAGE);
-					break;
+				NamedNodeMap attribute=node.getAttributes();
+				Node type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE);
+				if(type!=null&&getVariables().NodeTypeActorUC.equals("herramienta.diagrams.usecase.ucconcret:UseCase")){
+					contador++;
+					if(contador>getVariables().NUMBER_USE_CASE)
+					{
+						createViolation(getWebSourceCode().getLineForNode(node), MESSAGE);
+						break;
+					}
 				}
 			}
 		}
@@ -55,9 +59,22 @@ public class NumberUseCaseCheck extends AbstractXmlCheck{
 		{
 			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().USE_CASE_DIAGRAM_NAME))
 			{
-				ValidateRelationship(child);
+				if(getVariables().VALIDATE_UC_BY_TYPE){
+					isNodeValid(child);
+				}
+				else
+					ValidateRelationship(child);
 			}
+
 		}
+	}
+
+	private void isNodeValid(Node node){
+		NamedNodeMap attribute=node.getAttributes();
+		Node type=attribute.getNamedItem(getVariables().attributeTypeUCDiagram);
+		if(type!=null&&getVariables().nodeTypeUCDiagram.equals(type.getNodeValue()))
+			ValidateRelationship(node);
+
 	}
 	@Override
 	public void validate(XmlSourceCode xmlSourceCode) {

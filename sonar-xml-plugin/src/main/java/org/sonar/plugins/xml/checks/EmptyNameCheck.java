@@ -45,7 +45,7 @@ public class EmptyNameCheck extends AbstractXmlCheck{
 
 	private void validateAtrribiteName(Node node){
 		for(Node sibling=node.getFirstChild();sibling!= null;sibling=sibling.getNextSibling()){
-			if(sibling.getNodeName().equals(getVariables().NODE_USE_CASE)||sibling.getNodeName().equals(getVariables().NODE_ACTOR))
+			if(sibling.getNodeName().equals(getVariables().NODE_ELEMENT_USECASE))
 			{
 				NamedNodeMap attribute=sibling.getAttributes();
 				if(attribute.getNamedItem(getVariables().ATTRIBUTE_NAME)!=null){
@@ -62,11 +62,23 @@ public class EmptyNameCheck extends AbstractXmlCheck{
 		{
 			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().USE_CASE_DIAGRAM_NAME))
 			{
-				validateAtrribiteName(child);
+				if(getVariables().VALIDATE_UC_BY_TYPE){
+					isNodeValid(child);
+				}
+				else
+					validateAtrribiteName(child);
 			}
+
 		}
 	}
 
+	private void isNodeValid(Node node){
+		NamedNodeMap attribute=node.getAttributes();
+		Node type=attribute.getNamedItem(getVariables().attributeTypeUCDiagram);
+		if(type!=null&&getVariables().nodeTypeUCDiagram.equals(type.getNodeValue()))
+			validateAtrribiteName(node);
+
+	}
 	@Override
 	public void validate(XmlSourceCode xmlSourceCode) {
 		setWebSourceCode(xmlSourceCode);

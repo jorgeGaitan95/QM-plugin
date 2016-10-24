@@ -59,9 +59,22 @@ public class ActorConnectedCheck extends AbstractXmlCheck{
 		{
 			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().USE_CASE_DIAGRAM_NAME))
 			{
-				ValidateRelationship(child);
+				if(getVariables().VALIDATE_UC_BY_TYPE){
+					isNodeValid(child);
+				}
+				else
+					ValidateRelationship(child);
 			}
+
 		}
+	}
+
+	private void isNodeValid(Node node){
+		NamedNodeMap attribute=node.getAttributes();
+		Node type=attribute.getNamedItem(getVariables().attributeTypeUCDiagram);
+		if(type!=null&&getVariables().nodeTypeUCDiagram.equals(type.getNodeValue()))
+			ValidateRelationship(node);
+
 	}
 	@Override
 	public void validate(XmlSourceCode xmlSourceCode) {

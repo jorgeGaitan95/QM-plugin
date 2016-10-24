@@ -86,39 +86,49 @@ public class Variables {
 	public String[] CLASS_RESERVED_WORDS={"void","int","if","public","void","static","for","class"};
 
 	//CASE USE DIAGRAM
+	public  boolean VALIDATE_UC_BY_TYPE=true;
+	public String attributeTypeUCDiagram="xsi:type";
+	public  String nodeTypeUCDiagram="herramienta.diagrams.usecase.ucabstract:UseCaseDiagram";
 	public int NUMBER_USE_CASE=9;
 	public int NUMBER_ACTORS=5;
 	public int NUMBER_COMMUNICATIONS=9;
 	//nombre etiqueta diagrama de casos de uso
-	public String USE_CASE_DIAGRAM_NAME="usecase:Diagram";
+	public String USE_CASE_DIAGRAM_NAME="itsPackage";
 	//ETIQUETA RELACION
-	public String NODE_ACTOR="listActors";
+	//public String NODE_ACTOR="listActors";
+	public String NODE_ELEMENT_USECASE="itsModelElementUseCase";
+	public String NodeTypeActorUC="herramienta.diagrams.usecase.ucconcret:Actor";
+	public String NodeTypeUseCaseUC="herramienta.diagrams.usecase.ucconcret:UseCase";
 	//etiqueta atributo del diagrama de clases
-	public String NODE_USE_CASE="listUseCase";
-	public String NODE_RELATION_USECASE="listRelation";
-	public String RELATION_INCLUDE="usecase:Include";
-	public String RELATION_EXCLUDE="usecase:Exclude";
-	public String RELATION_HIEARCHY="usecase:Hiearchy";
-	public String RELATIONS_ASSOCIATIONS="usecase:Associations";
+	//public String NODE_USE_CASE="listUseCase";
+	public String NODE_RELATION_USECASE="itsRelationUseCase";
+	public String RELATION_INCLUDE="herramienta.diagrams.usecase.ucconcret:Include";
+	public String RELATION_EXCLUDE="herramienta.diagrams.usecase.ucconcret:Extend";
+	public String RELATION_HIEARCHY="herramienta.diagrams.usecase.ucconcret:Generalization";
+	public String RELATIONS_ASSOCIATIONS="herramienta.diagrams.usecase.ucconcret:Association";
 
 	//E-R DIAGRAM
-	public String ATTRIBUTE_TIPOATRIBUTO="tipo";
+	public  boolean VALIDATE_ER_BY_TYPE=true;
+	public String attributeTypeERDiagram="xsi:type";
+	public  String nodeTypeERDiagram="herramienta.diagrams.entidadrelacion:EntityDiagram";
+	public String ATTRIBUTE_TIPOATRIBUTO="type";
 	public String XSITYPE_ER="xsi:type";
-	public String NODE_ATTRIBUTE_ER="listAtributes";
-	public String ER_DIAGRAM_NAME="er:Diagram";
-	public String NODE_TABLE="listTable";
-	public String NODE_RELATIONER="listRelation";
-	public String RELATION_MANYTOMANY="er:ManyToMany";
-	public String RELATION_ONETOONE="er:OneToOne";
-	public String RELATION_ONETOONEOPTIONAL="er:OneToOneOptional";
-	public String RELATION_ONETOMANYOPTIONAL="er:OneToManyOptional";
+	public String NODE_ATTRIBUTE_ER="listAttribute";
+	public String ER_DIAGRAM_NAME="itsPackage";
+	public String NODE_TABLE="listEntity";
+	public String NODE_RELATIONER="itsRelationEntity";
+	public String RELATION_MANYTOMANY="herramienta.diagrams.entidadrelacion:ManyToMany";
+	public String RELATION_ONETOONE="herramienta.diagrams.entidadrelacion:OneToOne";
+	public String RELATION_ONETOMANY="herramienta.diagrams.entidadrelacion:OneToMany";
+	public String RELATION_ONETOONEOPTIONAL="herramienta.diagrams.entidadrelacion:OneToOneOptional";
+	public String RELATION_ONETOMANYOPTIONAL="herramienta.diagrams.entidadrelacion:OneToManyOptional";
 	//PERMITE DETERMINAR SI EL ATRIBUTO ES CLAVE PRIMARIA, FORANEA O UNICA
 	public String PROPIEDAD_ATTRIBUTE="propiedad";
 	public String[] ER_RESERVED_WORDS={"void","int","if","public","static","for","class"};
 	//nombreAtributo ER
-	public  String ATTRIBUTE_NAME_ATRIBUTE_TABLE="nombreAtributo";
+	public  String ATTRIBUTE_NAME_ATRIBUTE_TABLE="name";
 	//nombreAtributo ER
-	public  String ATTRIBUTE_NAME_TABLE="nombreTabla";
+	public  String ATTRIBUTE_NAME_TABLE="name";
 
 	public int MAX_MANY_TO_MANY_RELATIONS=3;
 	public int MAX_COMPLEX_ESTRUCTURE=2;
