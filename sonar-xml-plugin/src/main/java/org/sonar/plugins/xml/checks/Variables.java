@@ -58,9 +58,11 @@ public class Variables {
 	public String ATTRIBUTE_TARGET="target";
 	public String ATTRIBUTE_XSI_TYPE="xsi:type";
 	public String ATTRIBUTE_NAME="name";
+	
 	private static Variables instance;
 	//nombre etiqueta diagrama clase
 	public String CLASS_DIAGRAM_NAME="itsPackage";
+	public String ATTRIBUTE_TYPE_CLASS_DIAGRAM="xsi:type";
 	//valor xsi:type del diagrama de clase
 	public String TYPE_CLASS="herramienta.diagrams.domain:Domain_Diagram";
 	//etiqueta clase

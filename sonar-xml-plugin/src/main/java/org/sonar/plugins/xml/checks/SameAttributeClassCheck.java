@@ -87,7 +87,7 @@ public class SameAttributeClassCheck extends AbstractXmlCheck{
 			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().CLASS_DIAGRAM_NAME)) //Revisa que tenga la etiqueta itsClases, y si la tiene, da profundidad
 			{
 				NamedNodeMap attribute=child.getAttributes();
-				String type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
+				String type=attribute.getNamedItem(getVariables().ATTRIBUTE_TYPE_CLASS_DIAGRAM).getNodeValue();
 				if(type.equals(getVariables().TYPE_CLASS)){
 					validateAttributeType(child); //Envía al hijo a evaluarse
 				}

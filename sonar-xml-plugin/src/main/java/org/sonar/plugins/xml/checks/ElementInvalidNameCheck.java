@@ -81,7 +81,7 @@ public static final String MESSAGE="Check that element name conform to the patte
 			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().CLASS_DIAGRAM_NAME))
 			{
 				NamedNodeMap attribute=child.getAttributes();
-				String type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
+				String type=attribute.getNamedItem(getVariables().ATTRIBUTE_TYPE_CLASS_DIAGRAM).getNodeValue();
 				if(type.equals(getVariables().TYPE_CLASS)){
 					validateElements(child);
 				}
