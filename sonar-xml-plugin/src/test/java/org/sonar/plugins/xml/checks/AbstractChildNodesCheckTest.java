@@ -29,17 +29,17 @@ public class AbstractChildNodesCheckTest extends AbstractCheckTester {
 	public void checkOnlyParent() throws IOException {
 		XmlSourceCode sourceCode = parseAndCheck(
 				createTempFile(
-						"<"+var.NODE_DIAGRAM_CTT+" name='ctt1'>"
-								+"<"+var.NODE_LIST_TASK_CTT+" "+var.ATTRIBUTE_XSI_TYPE+"='"+var.CTT_ABSTRACTION_TASK+"' "+var.ATTRIBUTE_NAME+"='Despegar'/>"
-								+"<"+var.NODE_LIST_TASK_CTT+" "+var.ATTRIBUTE_XSI_TYPE+"='"+var.CTT_INTERACTION_TASK+"' "+var.ATTRIBUTE_NAME+"='DefinirViaje' theTarea='//@itsPackage.2/@listDialogTask.0'/>"
-								+"<"+var.NODE_LIST_TASK_CTT+" "+var.ATTRIBUTE_XSI_TYPE+"='"+var.CTT_INTERACTION_TASK+"' "+var.ATTRIBUTE_NAME+"='SeleccionarBoleto' theTarea='//@itsPackage.3/@listDialogTask.0'/>"
-								+"<"+var.NODE_LIST_TASK_CTT+" "+var.ATTRIBUTE_XSI_TYPE+"='"+var.CTT_INTERACTION_TASK+"' "+var.ATTRIBUTE_NAME+"='RealizarPago' theTarea='//@itsPackage.4/@listDialogTask.0'/>"
-								+"<"+var.NODE_LIST_TASK_CTT+" "+var.ATTRIBUTE_XSI_TYPE+"='"+var.CTT_ABSTRACTION_TASK+"' "+var.ATTRIBUTE_NAME+"='DefinirOrigen' theTarea='//@itsPackage.2/@listDialogTask.3'/>"
-								+"<"+var.NODE_LIST_RELATION_TASK+" "+var.ATTRIBUTE_XSI_TYPE+"='"+var.CTT_AGREGATION+"' "+var.ATTRIBUTE_SOURCE+"='//@itsPackage.1/@listTaskCTT.0' "+var.ATTRIBUTE_TARGET+"='//@itsPackage.1/@listTaskCTT.1'/>"
-								+"<"+var.NODE_LIST_RELATION_TASK+" "+var.ATTRIBUTE_XSI_TYPE+"='"+var.CTT_AGREGATION+"' "+var.ATTRIBUTE_SOURCE+"='//@itsPackage.1/@listTaskCTT.0' "+var.ATTRIBUTE_TARGET+"='//@itsPackage.1/@listTaskCTT.2'/>"
-								+"<"+var.NODE_LIST_RELATION_TASK+" "+var.ATTRIBUTE_XSI_TYPE+"='"+var.CTT_AGREGATION+"' "+var.ATTRIBUTE_SOURCE+"='//@itsPackage.1/@listTaskCTT.2' "+var.ATTRIBUTE_TARGET+"='//@itsPackage.1/@listTaskCTT.3'/>"
-								+"<"+var.NODE_LIST_RELATION_TASK+" "+var.ATTRIBUTE_XSI_TYPE+"='"+var.CTT_AGREGATION+"' "+var.ATTRIBUTE_SOURCE+"='//@itsPackage.1/@listTaskCTT.2' "+var.ATTRIBUTE_TARGET+"='//@itsPackage.1/@listTaskCTT.4'/>"
-								+"</"+var.NODE_DIAGRAM_CTT+">"
+						"<"+var.getNodeDiagramCtt()+" "+var.getAttributeTypeDiagramCtt()+"='"+var.getNodeTypeDiagramCtt()+"'>"
+								+"<"+var.getNodeListTaskCtt()+" "+var.getCttAttributeXsiType()+"='"+var.getCttAbstractionTask()+"' "+var.getCttAttributeName()+"='Despegar'/>"
+								+"<"+var.getNodeListTaskCtt()+" "+var.getCttAttributeXsiType()+"='"+var.getCttInteractionTask()+"' "+var.getCttAttributeName()+"='DefinirViaje' theTarea='//@itsPackage.2/@listDialogTask.0'/>"
+								+"<"+var.getNodeListTaskCtt()+" "+var.getCttAttributeXsiType()+"='"+var.getCttInteractionTask()+"' "+var.getCttAttributeName()+"='SeleccionarBoleto' theTarea='//@itsPackage.3/@listDialogTask.0'/>"
+								+"<"+var.getNodeListTaskCtt()+" "+var.getCttAttributeXsiType()+"='"+var.getCttInteractionTask()+"' "+var.getCttAttributeName()+"='RealizarPago' theTarea='//@itsPackage.4/@listDialogTask.0'/>"
+								+"<"+var.getNodeListTaskCtt()+" "+var.getCttAttributeXsiType()+"='"+var.getCttAbstractionTask()+"' "+var.getCttAttributeName()+"='DefinirOrigen' theTarea='//@itsPackage.2/@listDialogTask.3'/>"
+								+"<"+var.getNodeListRelationTask()+" "+var.getCttAttributeXsiType()+"='"+var.getCttAgregation()+"' "+var.getCttAttributeSource()+"='//@itsPackage.1/@listTaskCTT.0' "+var.getCttAttributeTarget()+"='//@itsPackage.1/@listTaskCTT.1'/>"
+								+"<"+var.getNodeListRelationTask()+" "+var.getCttAttributeXsiType()+"='"+var.getCttAgregation()+"' "+var.getCttAttributeSource()+"='//@itsPackage.1/@listTaskCTT.0' "+var.getCttAttributeTarget()+"='//@itsPackage.1/@listTaskCTT.2'/>"
+								+"<"+var.getNodeListRelationTask()+" "+var.getCttAttributeXsiType()+"='"+var.getCttAgregation()+"' "+var.getCttAttributeSource()+"='//@itsPackage.1/@listTaskCTT.2' "+var.getCttAttributeTarget()+"='//@itsPackage.1/@listTaskCTT.3'/>"
+								+"<"+var.getNodeListRelationTask()+" "+var.getCttAttributeXsiType()+"='"+var.getCttAgregation()+"' "+var.getCttAttributeSource()+"='//@itsPackage.1/@listTaskCTT.2' "+var.getCttAttributeTarget()+"='//@itsPackage.1/@listTaskCTT.4'/>"
+								+"</"+var.getNodeDiagramCtt()+">"
 						),
 				new AbstractChildNodesCheck());
 

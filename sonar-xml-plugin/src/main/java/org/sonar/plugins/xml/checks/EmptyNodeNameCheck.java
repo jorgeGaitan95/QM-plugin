@@ -33,29 +33,29 @@ import org.w3c.dom.Node;
  *
  */
 @Rule(key="EmptyNodeNameCheck",
-	name="Name cannot be null",
-	priority= Priority.MAJOR)
-	@BelongsToProfile(title = CheckRepository.SONAR_WAY_PROFILE_NAME, priority = Priority.MAJOR)
-	@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.ERRORS)
-	@SqaleConstantRemediation("5min")
+name="Name cannot be null",
+priority= Priority.MAJOR)
+@BelongsToProfile(title = CheckRepository.SONAR_WAY_PROFILE_NAME, priority = Priority.MAJOR)
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.ERRORS)
+@SqaleConstantRemediation("5min")
 public class EmptyNodeNameCheck  extends AbstractXmlCheck{
 
-	 public static final String MESSAGE="Check that the node name is not empty";
-	 
-	 
-	 private void validateAtrribiteName(Node node){
-        
-		 
-		
+	public static final String MESSAGE="Check that the node name is not empty";
+
+	
+	private void validateName(String name,Node node){
+		if(name==null||"".equals(name))
+			createViolation(getWebSourceCode().getLineForNode(node), MESSAGE);
+	}
+	private void validateAtrribiteName(Node node){
+
 		for(Node sibling=node.getFirstChild();sibling!= null;sibling=sibling.getNextSibling()){
-			if(sibling.getNodeName().equals(getVariables().NODE_LIST_TASK_CTT))
+			if(sibling.getNodeName().equals(getVariables().getNodeListTaskCtt()))
 			{
 				NamedNodeMap attribute=sibling.getAttributes();
-				if(attribute.getNamedItem(getVariables().ATTRIBUTE_NAME)!=null){
-					String name=attribute.getNamedItem(getVariables().ATTRIBUTE_NAME).getNodeValue();
-					if(name.equals("")||name==null)
-					createViolation(getWebSourceCode().getLineForNode(sibling), MESSAGE);
-				}
+				Node name=attribute.getNamedItem(getVariables().getCttAttributeName());
+				if(name!=null)
+					validateName(name.getNodeValue(),sibling);
 				else{
 					createViolation(getWebSourceCode().getLineForNode(sibling), MESSAGE);
 				}
@@ -64,33 +64,34 @@ public class EmptyNodeNameCheck  extends AbstractXmlCheck{
 
 		for (Node child=node.getFirstChild();child!=null;child=child.getNextSibling())
 		{
-			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().NODE_DIAGRAM_CTT))
+			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().getNodeDiagramCtt()))
 			{
-				NamedNodeMap attribute=child.getAttributes();
-				if(attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE)!=null){
-					String type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
-					if(type.equals(getVariables().NODE_TYPE_DIAGRAM_CTT)){
-						validateAtrribiteName(child);
-					}
+				if(getVariables().isValidateCttByType()){
+					isNodeValid(child);
 				}
 				else
-				validateAtrribiteName(child);
+					validateAtrribiteName(child);
 			}
 		}
 
 	}
-	
+	private void isNodeValid(Node node){
+		NamedNodeMap attribute=node.getAttributes();
+		Node type=attribute.getNamedItem(getVariables().getAttributeTypeDiagramCtt());
+		if(type!=null&&getVariables().getNodeTypeDiagramCtt().equals(type.getNodeValue()))
+			validateAtrribiteName(node);	
+	}
 	@Override
 	public void validate(XmlSourceCode xmlSourceCode) {
 		setWebSourceCode(xmlSourceCode);
 
-	    Document document = getWebSourceCode().getDocument(false);
-	    if (document.getDocumentElement() != null) {
-	    	validateAtrribiteName(document.getDocumentElement());
-	    }
-		
+		Document document = getWebSourceCode().getDocument(false);
+		if (document.getDocumentElement() != null) {
+			validateAtrribiteName(document.getDocumentElement());
+		}
+
 	}
-	
-	
+
+
 
 }

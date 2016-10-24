@@ -33,28 +33,24 @@ import org.w3c.dom.Node;
  *
  */
 @Rule(key="ValidateRelationshipNameCheck",
-	name="Relationships name should be appropriate",
-	priority= Priority.MINOR)
-	@BelongsToProfile(title = CheckRepository.SONAR_WAY_PROFILE_NAME, priority = Priority.MINOR)
-	@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.ERRORS)
-	@SqaleConstantRemediation("10min")
+name="Relationships name should be appropriate",
+priority= Priority.MINOR)
+@BelongsToProfile(title = CheckRepository.SONAR_WAY_PROFILE_NAME, priority = Priority.MINOR)
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.ERRORS)
+@SqaleConstantRemediation("10min")
 public class ValidateRelationshipNameCheck extends AbstractXmlCheck{
 
 	public static final String MESSAGE="Change names of the relations for a suitable with respect to the pattern names defined for: \n •	Cannot start number \n •	Only the following special characters are allowed: '-'', '_', '.' \n •	You cannot use space between words";
-	 
-	 
-	 private void validateRelationshipName(Node node){
-		 Node nodeName=null;
-		 NamedNodeMap attribute=null;
-		 String name=null;
+
+
+	private void validateRelationshipName(Node node){
+
 		for(Node sibling=node.getFirstChild();sibling!= null;sibling=sibling.getNextSibling()){
-			if(sibling.getNodeName().equals(getVariables().NODE_LIST_RELATION_TASK))
+			if(sibling.getNodeName().equals(getVariables().getNodeListRelationTask()))
 			{
-				attribute=sibling.getAttributes();
-				nodeName=attribute.getNamedItem(getVariables().ATTRIBUTE_NAME);
-				if(nodeName!=null){
-					name=nodeName.getNodeValue();
-					if(!(name.equals("")||name==null)&&!name.matches("^[a-zA-Z][a-zA-Z0-9]*"))
+				NamedNodeMap attribute=sibling.getAttributes();
+				Node nodeName=attribute.getNamedItem(getVariables().getCttAttributeName());
+				if(nodeName!=null&&!"".equals(nodeName.getNodeValue())&&!nodeName.getNodeValue().matches("^[a-zA-Z][a-zA-Z0-9]*")){
 					createViolation(getWebSourceCode().getLineForNode(sibling), MESSAGE);
 				}
 			}
@@ -62,30 +58,31 @@ public class ValidateRelationshipNameCheck extends AbstractXmlCheck{
 
 		for (Node child=node.getFirstChild();child!=null;child=child.getNextSibling())
 		{
-			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().NODE_DIAGRAM_CTT))
+			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().getNodeDiagramCtt()))
 			{
-				NamedNodeMap attributo=child.getAttributes();
-				if(attributo.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE)!=null){
-					String type=attributo.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
-					if(type.equals(getVariables().NODE_TYPE_DIAGRAM_CTT)){
-						validateRelationshipName(child);
-					}
+				if(getVariables().isValidateCttByType()){
+					isNodeValid(child);
 				}
-				validateRelationshipName(child);
+				else
+					validateRelationshipName(child);
 			}
 		}
 
 	}
-	
+	private void isNodeValid(Node node){
+		NamedNodeMap attribute=node.getAttributes();
+		Node type=attribute.getNamedItem(getVariables().getAttributeTypeDiagramCtt());
+		if(type!=null&&getVariables().getNodeTypeDiagramCtt().equals(type.getNodeValue()))
+			validateRelationshipName(node);	
+	}
 	@Override
 	public void validate(XmlSourceCode xmlSourceCode) {
-		// TODO Auto-generated method stub
 		setWebSourceCode(xmlSourceCode);
 
-	    Document document = getWebSourceCode().getDocument(false);
-	    if (document.getDocumentElement() != null) {
-	    	validateRelationshipName(document.getDocumentElement());
-	    }
+		Document document = getWebSourceCode().getDocument(false);
+		if (document.getDocumentElement() != null) {
+			validateRelationshipName(document.getDocumentElement());
+		}
 	}
 
 }

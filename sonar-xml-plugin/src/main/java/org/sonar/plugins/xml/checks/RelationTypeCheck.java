@@ -39,19 +39,24 @@ priority= Priority.BLOCKER)
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.ERRORS)
 @SqaleConstantRemediation("60min")
 public class RelationTypeCheck extends AbstractXmlCheck{
-	
-	
- public static final String MESSAGE="Change relationships for a valid type: enabling, disabling, independent concurrency, choice, Enabling with information passing ... and other";
-	 
-	 private void validateRelationship(Node node){
+
+
+	public static final String MESSAGE="Change relationships for a valid type: enabling, disabling, independent concurrency, choice, Enabling with information passing ... and other";
+    private boolean isValidRelation(Node type){
+    	if(type!=null){
+    		String tipoRelacion=type.getNodeValue();
+    		return tipoRelacion.equals(getVariables().getCttEnabling())||tipoRelacion.equals(getVariables().getCttDisablig())
+    				||tipoRelacion.equals(getVariables().getCttIndependentConcurrency())||tipoRelacion.equals(getVariables().getCttAgregation());
+    	}else
+    		return false;
+    }
+	private void validateRelationship(Node node){
 		for(Node sibling=node.getFirstChild();sibling!= null;sibling=sibling.getNextSibling()){
-			if(sibling.getNodeName().equals(getVariables().NODE_LIST_RELATION_TASK))
+			if(sibling.getNodeName().equals(getVariables().getNodeListRelationTask()))
 			{
 				NamedNodeMap attribute=sibling.getAttributes();
-				String typeRelationship=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
-				if(!(typeRelationship.equals(getVariables().CTT_ENABLING)||typeRelationship.equals(getVariables().CTT_DISABLING)||
-					typeRelationship.equals(getVariables().CTT_AGREGATION)||typeRelationship.equals(getVariables().CTT_INDEPENDENTCONCURRENCY))){
-
+				Node typeRelationship=attribute.getNamedItem(getVariables().getCttAttributeXsiType());
+				if(!isValidRelation(typeRelationship)){
 					createViolation(getWebSourceCode().getLineForNode(sibling), MESSAGE);
 				}
 			}
@@ -59,14 +64,10 @@ public class RelationTypeCheck extends AbstractXmlCheck{
 
 		for (Node child=node.getFirstChild();child!=null;child=child.getNextSibling())
 		{
-			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().NODE_DIAGRAM_CTT))
+			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().getNodeDiagramCtt()))
 			{
-				NamedNodeMap attribute=child.getAttributes();
-				if(attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE)!=null){
-					String type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
-					if(type.equals(getVariables().NODE_TYPE_DIAGRAM_CTT)){
-						validateRelationship(child);
-					}
+				if(getVariables().isValidateCttByType()){
+					isNodeValid(child);
 				}
 				else
 					validateRelationship(child);
@@ -74,14 +75,20 @@ public class RelationTypeCheck extends AbstractXmlCheck{
 		}
 
 	}
+	private void isNodeValid(Node node){
+		NamedNodeMap attribute=node.getAttributes();
+		Node type=attribute.getNamedItem(getVariables().getAttributeTypeDiagramCtt());
+		if(type!=null&&getVariables().getNodeTypeDiagramCtt().equals(type.getNodeValue()))
+			validateRelationship(node);	
+	}
 	@Override
 	public void validate(XmlSourceCode xmlSourceCode) {
 		setWebSourceCode(xmlSourceCode);
 
-	    Document document = getWebSourceCode().getDocument(false);
-	    if (document.getDocumentElement() != null) {
-	    	validateRelationship(document.getDocumentElement());
-	    }
+		Document document = getWebSourceCode().getDocument(false);
+		if (document.getDocumentElement() != null) {
+			validateRelationship(document.getDocumentElement());
+		}
 	}
 
 }

@@ -18,7 +18,6 @@
 
 package org.sonar.plugins.xml.checks;
 
-import java.util.ArrayList;
 
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.BelongsToProfile;
@@ -41,72 +40,78 @@ priority= Priority.BLOCKER)
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.ERRORS)
 @SqaleConstantRemediation("30min")
 public class ChildNodeCheck extends AbstractXmlCheck{
-	 
+
 	public static final String MESSAGE="Check that the node only has a single aggregation relationship where this is the target";
-	 
+
 	private int contarPadres(Node node,String hijo){
 		int contador=1;
 		for (Node sibling=node.getNextSibling();sibling!= null;sibling=sibling.getNextSibling()) {
-			
-			if(sibling.getNodeName().equals(getVariables().NODE_LIST_RELATION_TASK))
+
+			if(sibling.getNodeName().equals(getVariables().getNodeListRelationTask()))
 			{
 				NamedNodeMap attribute=sibling.getAttributes();
-				String type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
-				String target=attribute.getNamedItem(getVariables().ATTRIBUTE_TARGET).getNodeValue();
-				if(type.equals(getVariables().CTT_AGREGATION)&&target.equals(hijo))
-				   contador++;
+				Node type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE);
+				Node target=attribute.getNamedItem(getVariables().ATTRIBUTE_TARGET);
+				if(getVariables().getCttAgregation().equals(type.getNodeValue())&&hijo.equals(target.getNodeValue()))
+					contador++;
 			}
 		}
 		return contador;
 	}
-	
+
+	private boolean hasNodeNull(Node type,Node target){
+		return type!=null&&target!=null;
+	}
+	private void validateNode(Node node,String target){
+		if(contarPadres(node, target)>1)
+		{
+			createViolation(getWebSourceCode().getLineForNode(node),MESSAGE);
+		}
+	}
 	private void validateChildsNodes(Node node)
 	{
 		for(Node sibling=node.getFirstChild();sibling!= null;sibling=sibling.getNextSibling()){
-			if(sibling.getNodeName().equals(getVariables().NODE_LIST_RELATION_TASK))
+			if(sibling.getNodeName().equals(getVariables().getNodeListRelationTask()))
 			{
 				NamedNodeMap attribute=sibling.getAttributes();
-				String type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
-				String target=attribute.getNamedItem(getVariables().ATTRIBUTE_TARGET).getNodeValue();
-				if(type.equals(getVariables().CTT_AGREGATION)&&!target.equals(""))
+				Node type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE);
+				Node target=attribute.getNamedItem(getVariables().ATTRIBUTE_TARGET);
+				if(hasNodeNull(type,target)&&getVariables().getCttAgregation().equals(type.getNodeValue())&&!"".equals(target.getNodeValue()))
 				{
-					int contador=contarPadres(sibling, target);
-					if(contador>1)
-					{
-						createViolation(getWebSourceCode().getLineForNode(sibling),MESSAGE);
-					}
+					validateNode(sibling,target.getNodeValue());
 				}
 			}
 		}
-		
 		for (Node child=node.getFirstChild();child!=null;child=child.getNextSibling())
 		{
-			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().NODE_DIAGRAM_CTT))
+			if(child.getNodeType()==Node.ELEMENT_NODE&&getVariables().getNodeDiagramCtt().equals(child.getNodeName()))
 			{
-				NamedNodeMap attribute=child.getAttributes();
-				if(attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE)!=null){
-					String type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
-					if(type.equals(getVariables().NODE_TYPE_DIAGRAM_CTT)){
-						validateChildsNodes(child);
-					}
+				if(getVariables().isValidateCttByType()){
+					isNodeValid(child);
 				}
 				else
 					validateChildsNodes(child);
 			}
-			
+
 		}
 	}
-	
-	
+
+	private void isNodeValid(Node node){
+		NamedNodeMap attribute=node.getAttributes();
+		Node type=attribute.getNamedItem(getVariables().getAttributeTypeDiagramCtt());
+		if(type!=null&&getVariables().getNodeTypeDiagramCtt().equals(type.getNodeValue()))
+			validateChildsNodes(node);	
+	}
+
 	@Override
 	public void validate(XmlSourceCode xmlSourceCode) {
 		setWebSourceCode(xmlSourceCode);
 
-	    Document document = getWebSourceCode().getDocument(false);
-	    if (document.getDocumentElement() != null) {
-	      validateChildsNodes(document.getDocumentElement());
-	    }
-		
+		Document document = getWebSourceCode().getDocument(false);
+		if (document.getDocumentElement() != null) {
+			validateChildsNodes(document.getDocumentElement());
+		}
+
 	}
 
 }

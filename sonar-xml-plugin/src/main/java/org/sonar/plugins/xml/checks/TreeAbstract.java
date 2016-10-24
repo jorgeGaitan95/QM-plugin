@@ -20,24 +20,30 @@ package org.sonar.plugins.xml.checks;
 import java.util.ArrayList;
 
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
-
+/**
+ * 
+ * @author jorge
+ *
+ */
 public class TreeAbstract{
-
-	ArrayList<Nodo> arbol = new ArrayList<Nodo>();
-	public ArrayList<Nodo> getArbol() {
-		return arbol;
-	}
-
-
-	public void setArbol(ArrayList<Nodo> arbol) {
-		this.arbol = arbol;
-	}
-
 	private static TreeAbstract instance;
 	private static XmlSourceCode instancexml;
+	ArrayList<Nodo> arbol = new ArrayList<>();
+	
+	private TreeAbstract(XmlSourceCode archivoXml) {
+		Document document = archivoXml.getDocument(false);
+		if (document.getDocumentElement() != null) {
+			instancexml=archivoXml;
+			makeTree(document.getDocumentElement());
+		}
+	}
+	/**
+	 * 
+	 * @param xml
+	 * @return
+	 */
 	public static TreeAbstract getInstance(XmlSourceCode xml){
 		if(instancexml!=xml){
 			instance=null;
@@ -48,21 +54,23 @@ public class TreeAbstract{
 		return instance;
 	}
 	
-	
-	private TreeAbstract(XmlSourceCode archivoXml) {
-		Document document = archivoXml.getDocument(false);
-		if (document.getDocumentElement() != null) {
-			instancexml=archivoXml;
-			makeTree(document.getDocumentElement());
-		}
+	public ArrayList<Nodo> getArbol() {
+		return arbol;
 	}
+
+
+	public void setArbol(ArrayList<Nodo> arbol) {
+		this.arbol = arbol;
+	}
+
+	
 
 	private void makeTree(Node node) {
 
 		int pos = 0;
 
 		for(Node sibling=node.getFirstChild();sibling!= null;sibling=sibling.getNextSibling()){
-			if(sibling.getNodeName().equals(getVariables().NODE_LIST_TASK_CTT))
+			if(sibling.getNodeName().equals(getVariables().getNodeListTaskCtt()))
 			{
 				NamedNodeMap attribute=sibling.getAttributes();
 				String nombre = "";
@@ -79,7 +87,7 @@ public class TreeAbstract{
 
 
 		for(Node sibling=node.getFirstChild();sibling!= null;sibling=sibling.getNextSibling()){
-			if(sibling.getNodeName().equals(getVariables().NODE_LIST_RELATION_TASK))
+			if(sibling.getNodeName().equals(getVariables().getNodeListRelationTask()))
 			{
 				NamedNodeMap attribute=sibling.getAttributes();
 				String tipo = attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
@@ -106,7 +114,7 @@ public class TreeAbstract{
 
 					if (sourceNode != -1 && tarjetNode != -1){
 
-						if (tipo.equals(getVariables().CTT_AGREGATION)){
+						if (tipo.equals(getVariables().getCttAgregation())){
 
 							boolean control1 = false; // TRUE = EL NODO NO TIENE ASOCIADO UN PADRE
 							boolean control2 = false; // TRUE = EL NODO NO APARECE EN LA LISTA DE HIJOS
@@ -119,10 +127,10 @@ public class TreeAbstract{
 								control2 = true;
 							}
 							
-							if (control1 == true){
+							if (control1){
 								arbol.get(tarjetNode).setPadre(sourceNode);
 								
-								if(control2 == true){
+								if(control2){
 									arbol.get(sourceNode).getHijosPos().add(tarjetNode);
 								}else{
 									//TODO REPORTAR ERROR, HIJO AGREGADO ANTERIORMENTE (DOBLE RELACIÓN PADRE HIJO)									
@@ -137,7 +145,7 @@ public class TreeAbstract{
 							//TODO ERROR, NODO NO EXISTE O NO CREADO
 						}
 
-						if (tipo.equals(getVariables().CTT_ENABLING)){
+						if (tipo.equals(getVariables().getCttEnabling())){
 							
 							boolean control1 = false; //TRUE EL TARGET NO TIENE RELACIÓN ANTERIOR
 							boolean control2 = false; //TRUE EL SOURCE NO TIENE RELACIÓN SIGUIENTE
@@ -150,19 +158,19 @@ public class TreeAbstract{
 								control2 = true;
 							}
 							
-							if (control1 == true && control2 == true){
+							if (control1&& control2){
 								arbol.get(sourceNode).setSiguienteNodo(tarjetNode);	
-								arbol.get(sourceNode).setSiguienteRelation(getVariables().CTT_ENABLING);
+								arbol.get(sourceNode).setSiguienteRelation(getVariables().getCttEnabling());
 
 								arbol.get(tarjetNode).setAnteriorNodo(sourceNode);
-								arbol.get(tarjetNode).setAmteriorRelation(getVariables().CTT_ENABLING);
+								arbol.get(tarjetNode).setAmteriorRelation(getVariables().getCttEnabling());
 							}else{
 								//TODO REPORTAR ERROR DE RELACIÓN REDUNDANTE
 							}
 
 						}
 						
-							if (tipo.equals(getVariables().CTT_DISABLING)){
+							if (tipo.equals(getVariables().getCttDisablig())){
 							
 							boolean control1 = false; //TRUE EL TARGET NO TIENE RELACIÓN ANTERIOR
 							boolean control2 = false; //TRUE EL SOURCE NO TIENE RELACIÓN SIGUIENTE
@@ -175,19 +183,19 @@ public class TreeAbstract{
 								control2 = true;
 							}
 							
-							if (control1 == true && control2 == true){
+							if (control1&& control2){
 								arbol.get(sourceNode).setSiguienteNodo(tarjetNode);	
-								arbol.get(sourceNode).setSiguienteRelation(getVariables().CTT_DISABLING);
+								arbol.get(sourceNode).setSiguienteRelation(getVariables().getCttDisablig());
 
 								arbol.get(tarjetNode).setAnteriorNodo(sourceNode);
-								arbol.get(tarjetNode).setAmteriorRelation(getVariables().CTT_DISABLING);
+								arbol.get(tarjetNode).setAmteriorRelation(getVariables().getCttDisablig());
 							}else{
 								//TODO REPORTAR ERROR DE RELACIÓN REDUNDANTE
 							}
 
 						}
 
-						if (tipo.equals(getVariables().CTT_INDEPENDENTCONCURRENCY)){
+						if (tipo.equals(getVariables().getCttIndependentConcurrency())){
 							boolean control1 = false; //TRUE EL TARGET NO TIENE RELACIÓN ANTERIOR
 							boolean control2 = false; //TRUE EL SOURCE NO TIENE RELACIÓN SIGUIENTE
 							
@@ -199,12 +207,12 @@ public class TreeAbstract{
 								control2 = true;
 							}
 							
-							if (control1 == true && control2 == true){
+							if (control1&& control2){
 								arbol.get(sourceNode).setSiguienteNodo(tarjetNode);	
-								arbol.get(sourceNode).setSiguienteRelation(getVariables().CTT_INDEPENDENTCONCURRENCY);
+								arbol.get(sourceNode).setSiguienteRelation(getVariables().getCttIndependentConcurrency());
 
 								arbol.get(tarjetNode).setAnteriorNodo(sourceNode);
-								arbol.get(tarjetNode).setAmteriorRelation(getVariables().CTT_INDEPENDENTCONCURRENCY);
+								arbol.get(tarjetNode).setAmteriorRelation(getVariables().getCttIndependentConcurrency());
 							}else{
 								//TODO REPORTAR ERROR DE RELACIÓN REDUNDANTE
 							}
@@ -222,24 +230,24 @@ public class TreeAbstract{
 
 			for (Node child=node.getFirstChild();child!=null;child=child.getNextSibling())
 			{
-				if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().NODE_DIAGRAM_CTT))
+				if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().getNodeDiagramCtt()))
 				{
-					NamedNodeMap attribute=child.getAttributes();
-					if(attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE)!=null){
-						String type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
-						if(type.equals(getVariables().NODE_TYPE_DIAGRAM_CTT)){
-							makeTree(child);
-						}
+					if(getVariables().isValidateCttByType()){
+						isNodeValid(child);
 					}
 					else
 						makeTree(child);
-
 				}
 
 			}
 
 		}
-
+	private void isNodeValid(Node node){
+		NamedNodeMap attribute=node.getAttributes();
+		Node type=attribute.getNamedItem(getVariables().getAttributeTypeDiagramCtt());
+		if(type!=null&&getVariables().getNodeTypeDiagramCtt().equals(type.getNodeValue()))
+			makeTree(node);	
+	}
 
 	private Variables getVariables() {
 		// TODO Auto-generated method stub

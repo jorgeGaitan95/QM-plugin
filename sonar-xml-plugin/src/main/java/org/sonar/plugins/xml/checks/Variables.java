@@ -27,29 +27,37 @@ import java.io.InputStream;
 import java.util.*;
 
 public class Variables {
-	public  String CTT_AGREGATION;
-	public  String CTT_ENABLING;
-	public  String CTT_DISABLING;
-	public  String CTT_INDEPENDENTCONCURRENCY;
-	//Variable que representa el nodo del diagrama ctt--
-	public  String NODE_DIAGRAM_CTT;
-	public String NODE_TYPE_DIAGRAM_CTT;
-	public  String NODE_LIST_RELATION_TASK;
-	public  String NODE_LIST_TASK_CTT;
+	//CTT Diagram
+	private boolean validateCttByType;
+	private String attributeTypeDiagramCtt;
+	private String nodeTypeDiagramCtt;
+	private String nodeDiagramCtt;
+	//Relaciones del diagrama Ctt
+	private String cttAgregation;
+	private String cttEnabling;
+	private String cttDisablig;
+	private String cttIndependentConcurrency;
+	//Relaciones y Nodos del diagrama CTT
+	private String nodeListRelationTask;
+	private String nodeListTaskCtt;
 	//name
-	public  String ATTRIBUTE_NAME;
+	private  String cttAttributeName;
 	//source
-	public  String ATTRIBUTE_SOURCE;
+	private  String cttAttributeSource;
 	//xsi:type
-	public  String ATTRIBUTE_XSI_TYPE;
+	private  String cttAttributeXsiType;
 	//target
-	public  String ATTRIBUTE_TARGET;
-	
-	public  String CTT_ABSTRACTION_TASK;
-	public  String CTT_SYSTEM_TASK;
-	public  String CTT_USER_TASK;
-	public  String CTT_INTERACTION_TASK;
-	
+	private  String cttAttributeTarget;
+	//Tipos de nodos del diagrama Ctt
+	private  String cttAbstractionTask;
+	private  String cttSystemTask;
+	private  String cttUserTask;
+	private  String cttInteractionTask;
+
+	public String ATTRIBUTE_SOURCE="source";
+	public String ATTRIBUTE_TARGET="target";
+	public String ATTRIBUTE_XSI_TYPE="xsi:type";
+	public String ATTRIBUTE_NAME="name";
 	private static Variables instance;
 	//nombre etiqueta diagrama clase
 	public String CLASS_DIAGRAM_NAME="itsPackage";
@@ -72,9 +80,9 @@ public class Variables {
 	public String ATTRIBUTE_RETURN_OPERATION_CLASS="returnType";
 	//valor xsi:type de la relacion de herencia
 	public String CLASS_INHERITED_RELATION="herramienta.diagrams.domain:Herencia";
-	
+
 	public String[] CLASS_RESERVED_WORDS={"void","int","if","public","void","static","for","class"};
-	
+
 	//CASE USE DIAGRAM
 	public int NUMBER_USE_CASE=9;
 	public int NUMBER_ACTORS=5;
@@ -90,11 +98,11 @@ public class Variables {
 	public String RELATION_EXCLUDE="usecase:Exclude";
 	public String RELATION_HIEARCHY="usecase:Hiearchy";
 	public String RELATIONS_ASSOCIATIONS="usecase:Associations";
-	
+
 	//E-R DIAGRAM
 	public String ATTRIBUTE_TIPOATRIBUTO="tipo";
 	public String XSITYPE_ER="xsi:type";
-    public String NODE_ATTRIBUTE_ER="listAtributes";
+	public String NODE_ATTRIBUTE_ER="listAtributes";
 	public String ER_DIAGRAM_NAME="er:Diagram";
 	public String NODE_TABLE="listTable";
 	public String NODE_RELATIONER="listRelation";
@@ -109,62 +117,213 @@ public class Variables {
 	public  String ATTRIBUTE_NAME_ATRIBUTE_TABLE="nombreAtributo";
 	//nombreAtributo ER
 	public  String ATTRIBUTE_NAME_TABLE="nombreTabla";
-	
+
 	public int MAX_MANY_TO_MANY_RELATIONS=3;
 	public int MAX_COMPLEX_ESTRUCTURE=2;
-	
+
 	//BPMN CONSTANTES
 	public String BPNM_MODEL_PROCESS="model:process";
-	
+
 	//BPMN START eVENT
 	public String BPNM_START_EVENT="model:startEvent";
-	
 	public static Variables getInstance(){
 		if(instance==null){
 			instance=new Variables();
 		}
 		return instance;
 	}
-	
-	
+
+
 	private Variables() {
-		
+
 		inicializarVariables();
 	}
-	
-	private void inicializarVariables() {
-		  try {
-		   Properties propiedades = new Properties();
-		   propiedades
-		     .load(getClass().getResourceAsStream("/variables/variables.properties"));
-		   
-		   CTT_AGREGATION = propiedades.getProperty("CTT_AGREGATION");
-		   CTT_ENABLING = propiedades.getProperty("CTT_ENABLING");
-		   CTT_DISABLING=propiedades.getProperty("CTT_DISABLING");
-		   CTT_INDEPENDENTCONCURRENCY=propiedades.getProperty("CTT_INDEPENDENTCONCURRENCY");
-		   NODE_DIAGRAM_CTT=propiedades.getProperty("NODE_DIAGRAM_CTT");
-		   NODE_TYPE_DIAGRAM_CTT=propiedades.getProperty("NODE_TYPE_DIAGRAM_CTT");
-		   NODE_LIST_RELATION_TASK=propiedades.getProperty("NODE_LIST_RELATION_TASK");
-		   NODE_LIST_TASK_CTT=propiedades.getProperty("NODE_LIST_TASK_CTT");
-		   ATTRIBUTE_NAME=propiedades.getProperty("ATTRIBUTE_NAME");
-		   ATTRIBUTE_SOURCE=propiedades.getProperty("ATTRIBUTE_SOURCE");
-		   ATTRIBUTE_XSI_TYPE=propiedades.getProperty("ATTRIBUTE_XSI_TYPE");
-		   ATTRIBUTE_TARGET=propiedades.getProperty("ATTRIBUTE_TARGET");
-		   CTT_ABSTRACTION_TASK=propiedades.getProperty("CTT_ABSTRACTION_TASK");
-		   CTT_SYSTEM_TASK=propiedades.getProperty("CTT_SYSTEM_TASK");
-		   CTT_USER_TASK=propiedades.getProperty("CTT_USER_TASK");
-		   CTT_INTERACTION_TASK=propiedades.getProperty("CTT_INTERACTION_TASK");
-		  } catch (FileNotFoundException e) {
-		   System.out.println("Error, El archivo no exite");
-		  } catch (IOException e) {
-		   System.out.println("Error, No se puede leer el archivo");
-		  }
-}
-		
 
-/**
+	private void inicializarVariables() {
+		try {
+			Properties propiedades = new Properties();
+			propiedades
+			.load(getClass().getResourceAsStream("/variables/variables.properties"));
+			//Variables del Diagrama CTT
+			validateCttByType="true".equals(propiedades.getProperty("validateCttByType"));
+			attributeTypeDiagramCtt=propiedades.getProperty("attributeTypeDiagramCtt");
+			nodeTypeDiagramCtt=propiedades.getProperty("nodeTypeDiagramCtt");
+			nodeDiagramCtt=propiedades.getProperty("nodeDiagramCtt");
+			cttAgregation = propiedades.getProperty("cttAgregation");
+			cttEnabling = propiedades.getProperty("cttEnabling");
+			cttDisablig=propiedades.getProperty("cttDisablig");
+			cttIndependentConcurrency=propiedades.getProperty("cttIndependentConcurrency");
+			nodeListRelationTask=propiedades.getProperty("nodeListRelationTask");
+			nodeListTaskCtt=propiedades.getProperty("nodeListTaskCtt");
+			cttAttributeName=propiedades.getProperty("cttAttributeName");
+			cttAttributeSource=propiedades.getProperty("cttAttributeSource");
+			cttAttributeXsiType=propiedades.getProperty("cttAttributeXsiType");
+			cttAttributeTarget=propiedades.getProperty("cttAttributeTarget");
+			cttAbstractionTask=propiedades.getProperty("cttAbstractionTask");
+			cttSystemTask=propiedades.getProperty("cttSystemTask");
+			cttUserTask=propiedades.getProperty("cttUserTask");
+			cttInteractionTask=propiedades.getProperty("cttInteractionTask");
+
+		} catch (FileNotFoundException e) {
+			System.out.println("Error, El archivo no exite");
+		} catch (IOException e) {
+			System.out.println("Error, No se puede leer el archivo");
+		}
+	}
+
+
+	/**
+	 * @return the validateCttByType
+	 */
+	public boolean isValidateCttByType() {
+		return validateCttByType;
+	}
+
+
+	/**
+	 * @return the nodeTypeDiagramCtt
+	 */
+	public String getNodeTypeDiagramCtt() {
+		return nodeTypeDiagramCtt;
+	}
+
+	/**
+	 * 
+	 * @return the attributeTypeDiagramCtt
+	 */
+	public String getAttributeTypeDiagramCtt() {
+		return attributeTypeDiagramCtt;
+	}
+
+
+	/**
+	 * @return the nodeDiagramCtt
+	 */
+	public String getNodeDiagramCtt() {
+		return nodeDiagramCtt;
+	}
+
+
+	/**
+	 * @return the cttAgregation
+	 */
+	public String getCttAgregation() {
+		return cttAgregation;
+	}
+
+
+	/**
+	 * @return the cttEnabling
+	 */
+	public String getCttEnabling() {
+		return cttEnabling;
+	}
+
+
+	/**
+	 * @return the cttDisablig
+	 */
+	public String getCttDisablig() {
+		return cttDisablig;
+	}
+
+
+	/**
+	 * @return the cttIndependentConcurrency
+	 */
+	public String getCttIndependentConcurrency() {
+		return cttIndependentConcurrency;
+	}
+
+
+	/**
+	 * @return the nodeListRelationTask
+	 */
+	public String getNodeListRelationTask() {
+		return nodeListRelationTask;
+	}
+
+
+	/**
+	 * @return the nodeListTaskCtt
+	 */
+	public String getNodeListTaskCtt() {
+		return nodeListTaskCtt;
+	}
+
+
+	/**
+	 * @return the cttAttributeName
+	 */
+	public String getCttAttributeName() {
+		return cttAttributeName;
+	}
+
+
+	/**
+	 * @return the cttAttributeSource
+	 */
+	public String getCttAttributeSource() {
+		return cttAttributeSource;
+	}
+
+
+	/**
+	 * @return the cttAttributeXsiType
+	 */
+	public String getCttAttributeXsiType() {
+		return cttAttributeXsiType;
+	}
+
+
+	/**
+	 * @return the cttAttributeTarget
+	 */
+	public String getCttAttributeTarget() {
+		return cttAttributeTarget;
+	}
+
+
+	/**
+	 * @return the cttAbstractionTask
+	 */
+	public String getCttAbstractionTask() {
+		return cttAbstractionTask;
+	}
+
+
+	/**
+	 * @return the cttSystemTask
+	 */
+	public String getCttSystemTask() {
+		return cttSystemTask;
+	}
+
+
+	/**
+	 * @return the cttUserTask
+	 */
+	public String getCttUserTask() {
+		return cttUserTask;
+	}
+
+
+	/**
+	 * @return the cttInteractionTask
+	 */
+	public String getCttInteractionTask() {
+		return cttInteractionTask;
+	}
+
+
+
+
+
+
+
+	/**
 	public static String getNombreNodo(String source,Node node){
-		
+
 		if(source.equals("")||source==null)
 		{
 			return "";
@@ -190,5 +349,5 @@ public class Variables {
 		}
 		return nombreNodo;
 	}
-	*/
+	 */
 }

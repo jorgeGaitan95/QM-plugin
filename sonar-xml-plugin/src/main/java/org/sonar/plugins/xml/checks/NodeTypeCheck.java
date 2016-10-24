@@ -26,9 +26,6 @@ import org.sonar.check.Priority;
 import org.sonar.check.Rule;
 import org.sonar.squidbridge.annotations.SqaleConstantRemediation;
 import org.sonar.squidbridge.annotations.SqaleSubCharacteristic;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
 /**
  * The nodes must be of a valid type
  * @author Jorge
@@ -42,14 +39,10 @@ priority= Priority.BLOCKER)
 @SqaleConstantRemediation("60min")
 public class NodeTypeCheck extends AbstractXmlCheck{
 
-
-	
 	private boolean isTipoValido(String tipoNodo){
-		if(tipoNodo.equals(getVariables().CTT_ABSTRACTION_TASK)||tipoNodo.equals(getVariables().CTT_SYSTEM_TASK)||
-			tipoNodo.equals(getVariables().CTT_USER_TASK)||tipoNodo.equals(getVariables().CTT_INTERACTION_TASK)){
-				return true;
-		}else
-			return false;
+		return tipoNodo.equals(getVariables().getCttAbstractionTask())||tipoNodo.equals(getVariables().getCttSystemTask())||
+			tipoNodo.equals(getVariables().getCttUserTask())||tipoNodo.equals(getVariables().getCttInteractionTask());
+				
 	}
 
 	private void validateArbol(TreeAbstract arbol){

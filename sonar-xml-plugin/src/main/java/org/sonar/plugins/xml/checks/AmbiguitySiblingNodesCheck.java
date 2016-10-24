@@ -16,7 +16,6 @@
  * limitations under the License.
  */
 package org.sonar.plugins.xml.checks;
-import org.apache.xalan.xsltc.compiler.sym;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Priority;
@@ -38,79 +37,74 @@ priority= Priority.MAJOR)
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.ERRORS)
 @SqaleConstantRemediation("10min")
 public class AmbiguitySiblingNodesCheck extends AbstractXmlCheck{
-	 
-	public boolean validateNode(Node nodo, String target)
+	private boolean validateNode(Node nodo, String target)
 	{
 		NamedNodeMap attribute=nodo.getAttributes();
-		String type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
-		String source=attribute.getNamedItem(getVariables().ATTRIBUTE_SOURCE).getNodeValue();
-		if(type.equals(getVariables().CTT_INDEPENDENTCONCURRENCY)&&source.equals(target))
-			return true;
-		else
-			return false;
-	}
-	
+		Node nodeType=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE);
+		Node nodeSource=attribute.getNamedItem(getVariables().ATTRIBUTE_SOURCE);
+		if(nodeType!=null&&nodeSource!=null){
+			String type=nodeType.getNodeValue();
+			String source=nodeSource.getNodeValue();
+			return type.equals(getVariables().getCttIndependentConcurrency())&&source.equals(target);
+		}
+		return false;
+	} 
 	private boolean validateNextRelation(Node node, String target) {
-		
 		for (Node psibling =node.getPreviousSibling(); psibling!=null;psibling=psibling.getPreviousSibling()) {
-			if(psibling.getNodeName().equals(getVariables().NODE_LIST_RELATION_TASK))
+			if(psibling.getNodeName().equals(getVariables().getNodeListRelationTask())&&validateNode(psibling, target))
 			{
-				if(validateNode(psibling, target))
-					return true;
+				return true;
 			}
 		}
 		for (Node nsibling= node.getNextSibling();nsibling!=null;nsibling=nsibling.getNextSibling())
 		{
-			if(nsibling.getNodeName().equals(getVariables().NODE_LIST_RELATION_TASK))
+			if(nsibling.getNodeName().equals(getVariables().getNodeListRelationTask())&&validateNode(nsibling, target))
 			{
-				if(validateNode(nsibling, target))
-					return true;
+				return true;
 			}
 		}
-		
 		return false;
+	}
+	private boolean isNodeNull(Node type,Node target)
+	{
+		return type!=null&&target!=null;
 	}
 	
 	private void validateRelationTask(Node node)
 	{
-		
 		for(Node sibling=node.getFirstChild();sibling!=null;sibling=sibling.getNextSibling()){
-			if(sibling.getNodeName().equals(getVariables().NODE_LIST_RELATION_TASK))
+			if(sibling.getNodeName().equals(getVariables().getNodeListRelationTask()))
 			{
 				NamedNodeMap attribute=sibling.getAttributes();
-				String type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
-				if(type.equals(getVariables().CTT_ENABLING))
-				{
-					String source=attribute.getNamedItem(getVariables().ATTRIBUTE_SOURCE).getNodeValue();
-					String target=attribute.getNamedItem(getVariables().ATTRIBUTE_TARGET).getNodeValue();
-					
-					if(validateNextRelation(sibling, target))
-					{ 
-						createViolation(getWebSourceCode().getLineForNode(sibling), "A node cannot be related to a next node with a IndependentConcurrency relationship, if their relationship with the previous node is Enabling");
-					}
-				}
+				Node type=attribute.getNamedItem(getVariables().getCttAttributeXsiType());
+				Node target= attribute.getNamedItem(getVariables().getCttAttributeTarget());
+				if(isNodeNull(type, target)&&getVariables().getCttEnabling().equals(type.getNodeValue())
+						&&validateNextRelation(sibling, target.getNodeValue()))
+					createViolation(getWebSourceCode().getLineForNode(sibling), "A node cannot be related to a next node with a IndependentConcurrency relationship, if their relationship with the previous node is Enabling");
 			}
-			
+
 		}
-		
+
 		for (Node child=node.getFirstChild();child!=null;child=child.getNextSibling())
 		{
-			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().NODE_DIAGRAM_CTT))
+			if(child.getNodeType()==Node.ELEMENT_NODE&&getVariables().getNodeDiagramCtt().equals(child.getNodeName()))
 			{
-				NamedNodeMap attribute=child.getAttributes();
-				if(attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE)!=null){
-					String type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
-					if(type.equals(getVariables().NODE_TYPE_DIAGRAM_CTT)){
-						validateRelationTask(child);
-					}
+				if(getVariables().isValidateCttByType()){
+					isNodeValid(child);
 				}
 				else
-				validateRelationTask(child);
+					validateRelationTask(child);
 			}
-			
+
 		}
 	}
 	
+	private void isNodeValid(Node node){
+		NamedNodeMap attribute=node.getAttributes();
+		Node type=attribute.getNamedItem(getVariables().getAttributeTypeDiagramCtt());
+		if(type!=null&&getVariables().getNodeTypeDiagramCtt().equals(type.getNodeValue()))
+			validateRelationTask(node);	
+	}
 	
 	@Override
 	public void validate(XmlSourceCode xmlSourceCode) {

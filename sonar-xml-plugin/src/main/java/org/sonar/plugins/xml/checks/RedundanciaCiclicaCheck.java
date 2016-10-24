@@ -23,10 +23,6 @@ import java.util.ArrayList;
 import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Priority;
 import org.sonar.check.Rule;
-import org.w3c.dom.Document;
-import org.w3c.dom.NamedNodeMap;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 /**
  * @author Jorge
  *
@@ -36,11 +32,11 @@ name="Relationships must not contain cyclic redundancy",
 priority= Priority.BLOCKER)
 @BelongsToProfile(title=CheckRepository.SONAR_WAY_PROFILE_NAME,priority=Priority.BLOCKER)
 public class RedundanciaCiclicaCheck extends AbstractXmlCheck{
-	 
+
 	/*
 	 * valida el primer patron, en el cual si no existe un nodo inicial porque todos estan conectados
 	 */
-	public boolean hasRelationCyclic(ArrayList<Nodo> nodos,ArrayList<Integer> nodosHijos){
+	private boolean hasRelationCyclic(ArrayList<Nodo> nodos,ArrayList<Integer> nodosHijos){
 		for (int i = 0; i < nodosHijos.size(); i++) {
 			int pos=nodosHijos.get(i);
 			if(nodos.get(pos).getAnteriorNodo()<0){
@@ -49,14 +45,12 @@ public class RedundanciaCiclicaCheck extends AbstractXmlCheck{
 		}
 		return true;
 	}
-	public void validateNodesDiagram(TreeAbstract arbol){
+	private void validateNodesDiagram(TreeAbstract arbol){
 		ArrayList <Nodo> nodos=arbol.getArbol();
 		for (int i = 0; i < nodos.size(); i++) {
-			if(nodos.get(i).getHijosPos().size()>0){
-				if(hasRelationCyclic(nodos,nodos.get(i).getHijosPos())){
-					createViolation(getWebSourceCode().getLineForNode(nodos.get(i).getNodoReferencia())
-							,"check that relations between nodes do not form a cycle");
-				}
+			if(nodos.get(i).getHijosPos().size()>0&&hasRelationCyclic(nodos,nodos.get(i).getHijosPos())){
+				createViolation(getWebSourceCode().getLineForNode(nodos.get(i).getNodoReferencia())
+						,"check that relations between nodes do not form a cycle");
 			}
 		}
 	}

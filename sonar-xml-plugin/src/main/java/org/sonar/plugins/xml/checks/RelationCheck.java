@@ -18,7 +18,6 @@
 
 package org.sonar.plugins.xml.checks;
 
-import java.util.ArrayList;
 
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.BelongsToProfile;
@@ -41,19 +40,19 @@ priority= Priority.BLOCKER)
 @SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.ERRORS)
 @SqaleConstantRemediation("15min")
 public class RelationCheck extends AbstractXmlCheck{
-	
-	private void ValidateRelations(Node node)
+	private boolean validateNodes(Node source,Node target){
+		return source!=null&&target!=null&&!"".equals(source.getNodeValue())&&!"".equals(target.getNodeValue());
+	}
+	private void validateRelations(Node node)
 	{
 		for(Node sibling=node.getFirstChild();sibling!= null;sibling=sibling.getNextSibling()){
-			if(sibling.getNodeName().equals(getVariables().NODE_LIST_RELATION_TASK))
+			if(sibling.getNodeName().equals(getVariables().getNodeListRelationTask()))
 			{
 				NamedNodeMap attribute=sibling.getAttributes();
-				String type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
-				String source=attribute.getNamedItem(getVariables().ATTRIBUTE_SOURCE).getNodeValue();
-				String target= attribute.getNamedItem(getVariables().ATTRIBUTE_TARGET).getNodeValue();
+				Node source=attribute.getNamedItem(getVariables().getCttAttributeSource());
+				Node target= attribute.getNamedItem(getVariables().getCttAttributeTarget());
 				
-				if(source.equals(target)&&!source.equals("")&&!target.equals("")){
-//					String nombreNodo=getVariables().getNombreNodo(source, sibling.getParentNode());
+				if(validateNodes(source, target)&&source.getNodeValue().equals(target.getNodeValue())){
 					createViolation(getWebSourceCode().getLineForNode(sibling),"Check that there is no redundancy error node");
 				}
 					
@@ -62,30 +61,30 @@ public class RelationCheck extends AbstractXmlCheck{
 		
 		for (Node child=node.getFirstChild();child!=null;child=child.getNextSibling())
 		{
-			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().NODE_DIAGRAM_CTT))
+			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().getNodeDiagramCtt()))
 			{
-				NamedNodeMap attribute=child.getAttributes();
-				if(attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE)!=null){
-					String type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
-					if(type.equals(getVariables().NODE_TYPE_DIAGRAM_CTT)){
-						ValidateRelations(child);
-					}
+				if(getVariables().isValidateCttByType()){
+					isNodeValid(child);
 				}
 				else
-					ValidateRelations(child);
+					validateRelations(child);
 			}
-			
 		}
 	}
 	
-	
+	private void isNodeValid(Node node){
+		NamedNodeMap attribute=node.getAttributes();
+		Node type=attribute.getNamedItem(getVariables().getAttributeTypeDiagramCtt());
+		if(type!=null&&getVariables().getNodeTypeDiagramCtt().equals(type.getNodeValue()))
+			validateRelations(node);	
+	}
 	@Override
 	public void validate(XmlSourceCode xmlSourceCode) {
 		setWebSourceCode(xmlSourceCode);
 
 	    Document document = getWebSourceCode().getDocument(false);
 	    if (document.getDocumentElement() != null) {
-	      ValidateRelations(document.getDocumentElement());
+	    	validateRelations(document.getDocumentElement());
 	    }
 		
 	}

@@ -30,15 +30,15 @@ public class RelationTypeCheckTest extends AbstractCheckTester{
 	    XmlSourceCode sourceCode = parseAndCheck(
 	      createTempFile(
 	    		  "<prj:ProjectMDD xmi:version='2.0' xmlns:xmi='http://www.omg.org/XMI' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xmlns:herramienta='http:///herramienta.ecore' xmlns:herramienta.diagrams.dialog.concret='http:///herramienta/diagrams/dialog/concret.ecore' xmlns:herramienta.diagrams.domain='http:///herramienta/diagrams/domain.ecore' xmlns:herramienta.diagrams.interaction='http:///herramienta/diagrams/interaction.ecore' xmlns:herramienta.diagrams.navegation='http:///herramienta/diagrams/navegation.ecore' xmlns:herramienta.diagrams.ui='http:///herramienta/diagrams/ui.ecore'>"
-	    	    	+"<"+var.NODE_DIAGRAM_CTT+" name='ctt1'>"
-	    	    	+"<"+var.NODE_LIST_RELATION_TASK+" "+var.ATTRIBUTE_XSI_TYPE+"='otherType"+"' "+var.ATTRIBUTE_SOURCE+"='//@itsPackage.1/@listTaskCTT.4' "+var.ATTRIBUTE_TARGET+"='//@itsPackage.1/@listTaskCTT.5'/>"
-	    		    +"<"+var.NODE_LIST_RELATION_TASK+" "+var.ATTRIBUTE_XSI_TYPE+"='"+var.CTT_DISABLING+"' "+var.ATTRIBUTE_SOURCE+"='//@itsPackage.1/@listTaskCTT.7' "+var.ATTRIBUTE_TARGET+"='//@itsPackage.1/@listTaskCTT.6'/>"
-	    		    +"<"+var.NODE_LIST_RELATION_TASK+" "+var.ATTRIBUTE_XSI_TYPE+"='"+var.CTT_ENABLING+"' "+var.ATTRIBUTE_SOURCE+"='//@itsPackage.1/@listTaskCTT.1' "+var.ATTRIBUTE_TARGET+"='//@itsPackage.1/@listTaskCTT.2'/>"
-	    		    +"<"+var.NODE_LIST_RELATION_TASK+" "+var.ATTRIBUTE_XSI_TYPE+"='"+var.CTT_ENABLING+"' "+var.ATTRIBUTE_SOURCE+"='//@itsPackage.1/@listTaskCTT.2' target='//@itsPackage.1/@listTaskCTT.3'/>"
-	    		    +"<"+var.NODE_LIST_RELATION_TASK+" "+var.ATTRIBUTE_XSI_TYPE+"='"+var.CTT_AGREGATION+"' "+var.ATTRIBUTE_SOURCE+"='//@itsPackage.1/@listTaskCTT.0' "+var.ATTRIBUTE_TARGET+"='//@itsPackage.1/@listTaskCTT.1'/>"
-	    		    +"<"+var.NODE_LIST_RELATION_TASK+" "+var.ATTRIBUTE_XSI_TYPE+"='"+var.CTT_AGREGATION+"' "+var.ATTRIBUTE_SOURCE+"='//@itsPackage.1/@listTaskCTT.1' "+var.ATTRIBUTE_TARGET+"='//@itsPackage.1/@listTaskCTT.7'/>"
-	    		    +"<"+var.NODE_LIST_RELATION_TASK+" "+var.ATTRIBUTE_XSI_TYPE+"='"+var.CTT_AGREGATION+"' "+var.ATTRIBUTE_SOURCE+"='//@itsPackage.1/@listTaskCTT.7' "+var.ATTRIBUTE_TARGET+"='//@itsPackage.1/@listTaskCTT.4'/>"
-	    		    +"</"+var.NODE_DIAGRAM_CTT+">"
+	    			+"<"+var.getNodeDiagramCtt()+" "+var.getAttributeTypeDiagramCtt()+"='"+var.getNodeTypeDiagramCtt()+"'>"
+					+"<"+var.getNodeListRelationTask()+" "+var.getCttAttributeXsiType()+"='otherType"+"' "+var.getCttAttributeSource()+"='//@itsPackage.1/@listTaskCTT.4' "+var.getCttAttributeTarget()+"='//@itsPackage.1/@listTaskCTT.5'/>"
+	    		    +"<"+var.getNodeListRelationTask()+" "+var.getCttAttributeXsiType()+"='"+var.getCttDisablig()+"' "+var.getCttAttributeSource()+"='//@itsPackage.1/@listTaskCTT.7' "+var.getCttAttributeTarget()+"='//@itsPackage.1/@listTaskCTT.6'/>"
+	    		    +"<"+var.getNodeListRelationTask()+" "+var.getCttAttributeXsiType()+"='"+var.getCttEnabling()+"' "+var.getCttAttributeSource()+"='//@itsPackage.1/@listTaskCTT.1' "+var.getCttAttributeTarget()+"='//@itsPackage.1/@listTaskCTT.2'/>"
+	    		    +"<"+var.getNodeListRelationTask()+" "+var.getCttAttributeXsiType()+"='"+var.getCttEnabling()+"' "+var.getCttAttributeSource()+"='//@itsPackage.1/@listTaskCTT.2' target='//@itsPackage.1/@listTaskCTT.3'/>"
+	    		    +"<"+var.getNodeListRelationTask()+" "+var.getCttAttributeXsiType()+"='"+var.getCttAgregation()+"' "+var.getCttAttributeSource()+"='//@itsPackage.1/@listTaskCTT.0' "+var.getCttAttributeTarget()+"='//@itsPackage.1/@listTaskCTT.1'/>"
+	    		    +"<"+var.getNodeListRelationTask()+" "+var.getCttAttributeXsiType()+"='"+var.getCttAgregation()+"' "+var.getCttAttributeSource()+"='//@itsPackage.1/@listTaskCTT.1' "+var.getCttAttributeTarget()+"='//@itsPackage.1/@listTaskCTT.7'/>"
+	    		    +"<"+var.getNodeListRelationTask()+" "+var.getCttAttributeXsiType()+"='"+var.getCttAgregation()+"' "+var.getCttAttributeSource()+"='//@itsPackage.1/@listTaskCTT.7' "+var.getCttAttributeTarget()+"='//@itsPackage.1/@listTaskCTT.4'/>"
+	    		    +"</"+var.getNodeDiagramCtt()+">"
 	    		    +"</prj:ProjectMDD>"
 	    		  ),
 	      new RelationTypeCheck());

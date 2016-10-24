@@ -48,12 +48,12 @@ public class OnlyTargetCheck extends AbstractXmlCheck{
 		int contador=1;
 		for (Node sibling=node.getNextSibling();sibling!= null;sibling=sibling.getNextSibling()) {
 			
-			if(sibling.getNodeName().equals(getVariables().NODE_LIST_RELATION_TASK))
+			if(sibling.getNodeName().equals(getVariables().getNodeListRelationTask()))
 			{
 				NamedNodeMap attribute=sibling.getAttributes();
-				String type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
-				String target=attribute.getNamedItem(getVariables().ATTRIBUTE_TARGET).getNodeValue();
-				if(!type.equals(getVariables().CTT_AGREGATION)&&target.equals(nodoTarget))
+				Node type=attribute.getNamedItem(getVariables().getCttAttributeXsiType());
+				Node target=attribute.getNamedItem(getVariables().getCttAttributeSource());
+				if(type!=null&&target!=null&&(!type.getNodeValue().equals(getVariables().getCttAgregation())&&target.getNodeValue().equals(nodoTarget)))
 				   contador++;
 			}
 		}
@@ -69,23 +69,25 @@ public class OnlyTargetCheck extends AbstractXmlCheck{
 		}
 		return false;
 	}
-	
+	private boolean validateNodes(Node type, Node target){
+		return type!=null&&target!=null&&!"".equals(type.getNodeValue())&&!type.equals(getVariables().getCttAgregation()) 
+				&&!"".equals(target.getNodeValue());
+	}
 	private void validateNodeTarget(Node node)
 	{
 		ArrayList<String> targetComparados=new ArrayList<String>();
 		for(Node sibling=node.getFirstChild();sibling!= null;sibling=sibling.getNextSibling()){
-			if(sibling.getNodeName().equals(getVariables().NODE_LIST_RELATION_TASK))
+			if(sibling.getNodeName().equals(getVariables().getNodeListRelationTask()))
 			{
 				NamedNodeMap attribute=sibling.getAttributes();
-				String type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
-				String target=attribute.getNamedItem(getVariables().ATTRIBUTE_TARGET).getNodeValue();
-				if(!type.equals(getVariables().CTT_AGREGATION) && !isTargetComparado(targetComparados,target)&&!target.equals(""))
+				Node type=attribute.getNamedItem(getVariables().getCttAttributeXsiType());
+				Node target=attribute.getNamedItem(getVariables().getCttAttributeTarget());
+				if(validateNodes(type, target) && !isTargetComparado(targetComparados,target.getNodeValue()))
 				{
-					targetComparados.add(target);
-					int contador=contarTargetIguales(sibling, target);
+					targetComparados.add(target.getNodeValue());
+					int contador=contarTargetIguales(sibling, target.getNodeValue());
 					if(contador>1)
 					{
-//						String nombreNodo=getVariables().getNombreNodo(target,sibling.getParentNode());
 						createViolation(getWebSourceCode().getLineForNode(sibling), MESSAGE);
 					}
 				}
@@ -94,23 +96,22 @@ public class OnlyTargetCheck extends AbstractXmlCheck{
 		
 		for (Node child=node.getFirstChild();child!=null;child=child.getNextSibling())
 		{
-			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().NODE_DIAGRAM_CTT))
+			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().getNodeDiagramCtt()))
 			{
-				NamedNodeMap attribute=child.getAttributes();
-				if(attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE)!=null){
-					String type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
-					if(type.equals(getVariables().NODE_TYPE_DIAGRAM_CTT)){
-						validateNodeTarget(child);
-					}
+				if(getVariables().isValidateCttByType()){
+					isNodeValid(child);
 				}
 				else
-				validateNodeTarget(child);
+					validateNodeTarget(child);
 			}
-			
 		}
 	}
-	
-	
+	private void isNodeValid(Node node){
+		NamedNodeMap attribute=node.getAttributes();
+		Node type=attribute.getNamedItem(getVariables().getAttributeTypeDiagramCtt());
+		if(type!=null&&getVariables().getNodeTypeDiagramCtt().equals(type.getNodeValue()))
+			validateNodeTarget(node);	
+	}
 	@Override
 	public void validate(XmlSourceCode xmlSourceCode) {
 		setWebSourceCode(xmlSourceCode);

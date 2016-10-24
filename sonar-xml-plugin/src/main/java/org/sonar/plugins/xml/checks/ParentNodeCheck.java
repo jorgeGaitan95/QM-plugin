@@ -46,12 +46,12 @@ public class ParentNodeCheck extends AbstractXmlCheck{
 	private int contarHijos(Node node,String padre){
 		int contador=1;
 		for (Node sibling=node.getNextSibling();sibling!= null;sibling=sibling.getNextSibling()) {
-			if(sibling.getNodeName().equals(getVariables().NODE_LIST_RELATION_TASK))
+			if(sibling.getNodeName().equals(getVariables().getNodeListRelationTask()))
 			{
 				NamedNodeMap attribute=sibling.getAttributes();
-				String type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
-				String source=attribute.getNamedItem(getVariables().ATTRIBUTE_SOURCE).getNodeValue();
-				if(type.equals(getVariables().CTT_AGREGATION)&&source.equals(padre))
+				Node type=attribute.getNamedItem(getVariables().getCttAttributeXsiType());
+				Node source=attribute.getNamedItem(getVariables().getCttAttributeSource());
+				if(type!=null&&source!=null&& type.getNodeValue().equals(getVariables().getCttAgregation())&&source.getNodeValue().equals(padre))
 					contador++;
 			}
 		}
@@ -67,23 +67,25 @@ public class ParentNodeCheck extends AbstractXmlCheck{
 		}
 		return false;
 	}
-
+	private boolean validateNodes(Node type, Node source){
+		return type!=null&&source!=null&&!"".equals(type.getNodeValue())&&type.getNodeValue().equals(getVariables().getCttAgregation()) 
+				&&!"".equals(source.getNodeValue());
+	}
 	private void validateChildsOfParent(Node node)
 	{
-		ArrayList<String> padresVisitados=new ArrayList<String>();
+		ArrayList<String> padresVisitados=new ArrayList<>();
 		for(Node sibling=node.getFirstChild();sibling!= null;sibling=sibling.getNextSibling()){
-			if(sibling.getNodeName().equals(getVariables().NODE_LIST_RELATION_TASK))
+			if(sibling.getNodeName().equals(getVariables().getNodeListRelationTask()))
 			{
 				NamedNodeMap attribute=sibling.getAttributes();
-				String type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
-				String source=attribute.getNamedItem(getVariables().ATTRIBUTE_SOURCE).getNodeValue();
-				if(type.equals(getVariables().CTT_AGREGATION) && !isPadreVisitado(padresVisitados,source))
+				Node type=attribute.getNamedItem(getVariables().getCttAttributeXsiType());
+				Node source=attribute.getNamedItem(getVariables().getCttAttributeSource());
+				if(validateNodes(type,source)&& !isPadreVisitado(padresVisitados,source.getNodeValue()))
 				{
-					padresVisitados.add(source);
-					int contador=contarHijos(sibling, source);
+					padresVisitados.add(source.getNodeValue());
+					int contador=contarHijos(sibling, source.getNodeValue());
 					if(contador==1)
 					{
-						//						String nombreNodo=getVariables().getNombreNodo(source,sibling.getParentNode());
 						createViolation(getWebSourceCode().getLineForNode(sibling),MESSAGE);
 					}
 				}
@@ -91,20 +93,21 @@ public class ParentNodeCheck extends AbstractXmlCheck{
 		}
 		for (Node child=node.getFirstChild();child!=null;child=child.getNextSibling())
 		{
-			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().NODE_DIAGRAM_CTT))
+			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().getNodeDiagramCtt()))
 			{
-				NamedNodeMap attribute=child.getAttributes();
-				if(attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE)!=null){
-					String type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
-					if(type.equals(getVariables().NODE_TYPE_DIAGRAM_CTT)){
-						validateChildsOfParent(child);
-					}
+				if(getVariables().isValidateCttByType()){
+					isNodeValid(child);
 				}
 				else
 					validateChildsOfParent(child);
 			}
-
 		}
+	}
+	private void isNodeValid(Node node){
+		NamedNodeMap attribute=node.getAttributes();
+		Node type=attribute.getNamedItem(getVariables().getAttributeTypeDiagramCtt());
+		if(type!=null&&getVariables().getNodeTypeDiagramCtt().equals(type.getNodeValue()))
+			validateChildsOfParent(node);	
 	}
 	@Override
 	public void validate(XmlSourceCode xmlSourceCode) {

@@ -42,12 +42,11 @@ public class AbstractChildNodesCheck extends AbstractXmlCheck{
 	private void validateAbstractNode(TreeAbstract arbol){
 		ArrayList <Nodo> nodos=arbol.getArbol();
 		for (int i = 0; i < nodos.size(); i++) {
-			if(nodos.get(i).getTipo().equals(getVariables().CTT_ABSTRACTION_TASK)&&nodos.get(i).getHijosPos().size()<2){
-				if(nodos.get(i).getNodoReferencia()!=null)
-				{
+			if(nodos.get(i).getTipo().equals(getVariables().getCttAbstractionTask())&&nodos.get(i).getHijosPos().size()<2
+				&&nodos.get(i).getNodoReferencia()!=null){
+				
 					createViolation(getWebSourceCode().getLineForNode(nodos.get(i).getNodoReferencia())
 							,"The Abstract Task can’t be used if they don’t have any childrens");
-				}
 			}
 		}
 	}

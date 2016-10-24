@@ -40,10 +40,8 @@ public class SingleNodeNameCheck extends AbstractXmlCheck{
 
 	private boolean tieneNombreIgual(ArrayList<Nodo> arbolNodos,String nombreNodo, int posActual){
 		for (int i = 0; i < arbolNodos.size(); i++) {
-			if(!(i==posActual)){
-				if(arbolNodos.get(i).getNombre().equals(nombreNodo)){
-					return true;
-				}
+			if(i!=posActual&&arbolNodos.get(i).getNombre().equals(nombreNodo)){
+				return true;
 			}
 		}
 		return false;
@@ -53,13 +51,11 @@ public class SingleNodeNameCheck extends AbstractXmlCheck{
 		ArrayList <Nodo> nodos=arbol.getArbol();
 		for (int i = 0; i < nodos.size(); i++) {
 
-			if(tieneNombreIgual(nodos, nodos.get(i).getNombre(),i))
+			if(tieneNombreIgual(nodos, nodos.get(i).getNombre(),i)&&nodos.get(i).getNodoReferencia()!=null)
 			{
-				if(nodos.get(i).getNodoReferencia()!=null)
-				{
-					createViolation(getWebSourceCode().getLineForNode(nodos.get(i).getNodoReferencia())
-							,"Change the name of Node, It is not recommended that exist nodes called equal");
-				}
+				createViolation(getWebSourceCode().getLineForNode(nodos.get(i).getNodoReferencia())
+						,"Change the name of Node, It is not recommended that exist nodes called equal");
+
 			}
 		}
 	}

@@ -43,17 +43,17 @@ priority= Priority.BLOCKER)
 public class OnlySourceCheck extends AbstractXmlCheck{
 	 
 	public static final String MESSAGE="Check that the node is connected to a only node next";
-	 
+
 	private int contarSourceIguales(Node node,String nodoSource){
 		int contador=1;
 		for (Node sibling=node.getNextSibling();sibling!= null;sibling=sibling.getNextSibling()) {
 			
-			if(sibling.getNodeName().equals(getVariables().NODE_LIST_RELATION_TASK))
+			if(sibling.getNodeName().equals(getVariables().getNodeListRelationTask()))
 			{
 				NamedNodeMap attribute=sibling.getAttributes();
-				String type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
-				String source=attribute.getNamedItem(getVariables().ATTRIBUTE_SOURCE).getNodeValue();
-				if(!(type.equals(getVariables().CTT_AGREGATION))&&source.equals(nodoSource))
+				Node type=attribute.getNamedItem(getVariables().getCttAttributeXsiType());
+				Node source=attribute.getNamedItem(getVariables().getCttAttributeSource());
+				if(type!=null&&source!=null&&!(type.getNodeValue().equals(getVariables().getCttAgregation()))&&source.getNodeValue().equals(nodoSource))
 				   contador++;
 			}
 		}
@@ -69,23 +69,25 @@ public class OnlySourceCheck extends AbstractXmlCheck{
 		}
 		return false;
 	}
-	
+	private boolean validateNodes(Node type, Node source){
+		return type!=null&&source!=null&&!"".equals(type.getNodeValue())&&!type.equals(getVariables().getCttAgregation()) 
+				&&!"".equals(source.getNodeValue());
+	}
 	private void validateNodeSource(Node node)
 	{
-		ArrayList<String> sourceComparados=new ArrayList<String>();
+		ArrayList<String> sourceComparados=new ArrayList<>();
 		for(Node sibling=node.getFirstChild();sibling!= null;sibling=sibling.getNextSibling()){
-			if(sibling.getNodeName().equals(getVariables().NODE_LIST_RELATION_TASK))
+			if(sibling.getNodeName().equals(getVariables().getNodeListRelationTask()))
 			{
 				NamedNodeMap attribute=sibling.getAttributes();
-				String type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
-				String source=attribute.getNamedItem(getVariables().ATTRIBUTE_SOURCE).getNodeValue();
-				if(!type.equals(getVariables().CTT_AGREGATION) && !isSourceComparado(sourceComparados,source)&&!source.equals(""))
+				Node type=attribute.getNamedItem(getVariables().getCttAttributeXsiType());
+				Node source=attribute.getNamedItem(getVariables().getCttAttributeSource());
+				if(validateNodes(type, source)&& !isSourceComparado(sourceComparados,source.getNodeValue()))
 				{
-					sourceComparados.add(source);
-					int contador=contarSourceIguales(sibling, source);
+					sourceComparados.add(source.getNodeValue());
+					int contador=contarSourceIguales(sibling, source.getNodeValue());
 					if(contador>1)
 					{
-//						String nombreNodo=getVariables().getNombreNodo(source,sibling.getParentNode());
 						createViolation(getWebSourceCode().getLineForNode(sibling),MESSAGE);
 					}
 				}
@@ -94,22 +96,22 @@ public class OnlySourceCheck extends AbstractXmlCheck{
 		
 		for (Node child=node.getFirstChild();child!=null;child=child.getNextSibling())
 		{
-			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().NODE_DIAGRAM_CTT))
+			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().getNodeDiagramCtt()))
 			{
-				NamedNodeMap attribute=child.getAttributes();
-				if(attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE)!=null){
-					String type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
-					if(type.equals(getVariables().NODE_TYPE_DIAGRAM_CTT)){
-						validateNodeSource(child);
-					}
+				if(getVariables().isValidateCttByType()){
+					isNodeValid(child);
 				}
 				else
-				validateNodeSource(child);
+					validateNodeSource(child);
 			}
-			
 		}
 	}
-	
+	private void isNodeValid(Node node){
+		NamedNodeMap attribute=node.getAttributes();
+		Node type=attribute.getNamedItem(getVariables().getAttributeTypeDiagramCtt());
+		if(type!=null&&getVariables().getNodeTypeDiagramCtt().equals(type.getNodeValue()))
+			validateNodeSource(node);	
+	}
 	
 	@Override
 	public void validate(XmlSourceCode xmlSourceCode) {

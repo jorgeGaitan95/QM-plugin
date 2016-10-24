@@ -29,9 +29,9 @@ public class EmptySourceCheckTest extends AbstractCheckTester {
 
 	@Test
 	public void checkAttributeTarget() throws IOException {
-		String a= "<"+var.NODE_DIAGRAM_CTT+" "+var.ATTRIBUTE_NAME+"='ctt1'>"
-				+"<"+var.NODE_LIST_RELATION_TASK+" "+var.ATTRIBUTE_XSI_TYPE+"='"+var.CTT_INDEPENDENTCONCURRENCY+"' "+var.ATTRIBUTE_SOURCE+"='' "+var.ATTRIBUTE_TARGET+"='//@itsPackage.1/@listTaskCTT.4'/>"
-				+"</"+var.NODE_DIAGRAM_CTT+">";
+		String a= "<"+var.getNodeDiagramCtt()+" "+var.getAttributeTypeDiagramCtt()+"='"+var.getNodeTypeDiagramCtt()+"'>"
+    		  	+"<"+var.getNodeListRelationTask()+" "+var.getCttAttributeXsiType()+"='"+var.getCttIndependentConcurrency()+"' "+var.getCttAttributeSource()+"='' "+var.getCttAttributeTarget()+"='//@itsPackage.1/@listTaskCTT.4'/>"
+				+"</"+var.getNodeDiagramCtt()+">";
 
 		XmlSourceCode sourceCode = parseAndCheck(
 				createTempFile(a),
@@ -42,9 +42,9 @@ public class EmptySourceCheckTest extends AbstractCheckTester {
 
 	@Test
 	public void checkAttributeTarget1() throws IOException {
-		String a= "<"+var.NODE_DIAGRAM_CTT+" "+var.ATTRIBUTE_NAME+"='ctt1'>"
-				+"<"+var.NODE_LIST_RELATION_TASK+" "+var.ATTRIBUTE_XSI_TYPE+"='"+var.CTT_INDEPENDENTCONCURRENCY+"' "+var.ATTRIBUTE_SOURCE+"='//@itsPackage.1/@listTaskCTT.4' "+var.ATTRIBUTE_TARGET+"='//@itsPackage.1/@listTaskCTT.4'/>"
-				+"</"+var.NODE_DIAGRAM_CTT+">";
+		String a= "<"+var.getNodeDiagramCtt()+" "+var.getAttributeTypeDiagramCtt()+"='"+var.getNodeTypeDiagramCtt()+"'>"
+    		  	+"<"+var.getNodeListRelationTask()+" "+var.getCttAttributeXsiType()+"='"+var.getCttIndependentConcurrency()+"' "+var.getCttAttributeSource()+"='//@itsPackage.1/@listTaskCTT.4' "+var.getCttAttributeTarget()+"='//@itsPackage.1/@listTaskCTT.4'/>"
+				+"</"+var.getNodeDiagramCtt()+">";
 		
 		XmlSourceCode sourceCode = parseAndCheck(
 				createTempFile(a),

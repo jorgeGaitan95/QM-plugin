@@ -41,13 +41,13 @@ public class TreeLuytenCheck extends AbstractXmlCheck{
 		ArrayList <Nodo> nodos=arbol.getArbol();
 		for (int i = 0; i < nodos.size(); i++) {
 			Nodo nodoAux=nodos.get(i);
-			if(nodoAux.getSiguienteRelation().equals(getVariables().CTT_ENABLING)&&nodoAux.getSiguienteNodo()>0){
+			if(nodoAux.getSiguienteRelation().equals(getVariables().getCttEnabling())&&nodoAux.getSiguienteNodo()>0){
 				nodoAux=nodos.get(nodoAux.getSiguienteNodo());
-				if(nodoAux.getSiguienteNodo()>0&&nodoAux.getSiguienteRelation().equals(getVariables().CTT_DISABLING)){
+				if(nodoAux.getSiguienteNodo()>0&&nodoAux.getSiguienteRelation().equals(getVariables().getCttDisablig())){
 					nodoAux=nodos.get(nodoAux.getSiguienteNodo());
-					if(nodoAux.getSiguienteNodo()>0&&nodoAux.getSiguienteRelation().equals(getVariables().CTT_INDEPENDENTCONCURRENCY)){
+					if(nodoAux.getSiguienteNodo()>0&&nodoAux.getSiguienteRelation().equals(getVariables().getCttIndependentConcurrency())){
 						nodoAux=nodos.get(nodoAux.getSiguienteNodo());
-						if(nodoAux.getSiguienteNodo()>0&&nodoAux.getSiguienteRelation().equals(getVariables().CTT_INDEPENDENTCONCURRENCY)){
+						if(nodoAux.getSiguienteNodo()>0&&nodoAux.getSiguienteRelation().equals(getVariables().getCttIndependentConcurrency())){
 							createViolation(getWebSourceCode().getLineForNode(nodos.get(i).getNodoReferencia())
 									,"Review the tree relevance, in order to validate the sequence order of the tree this should be able to become a tree of priority, should not be able to transform, indicate that there are ambiguities between nodes.");
 						}

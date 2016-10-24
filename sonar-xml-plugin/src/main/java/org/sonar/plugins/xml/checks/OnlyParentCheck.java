@@ -39,23 +39,28 @@ priority= Priority.BLOCKER)
 public class OnlyParentCheck extends AbstractXmlCheck{
 
 	public static final String MESSAGE="Existe mas de un nodo raiz en este diagrama";
-
-	public boolean isOnlyParent(int posicionNodo,Node padre){
+	/**
+	 * busca si en la lista de nodos hay alguna relacion de tipo agragacion en la que el nodo sea hijo
+	 * @param posicionNodo posicion del nodo analizado
+	 * @param padre Nodo del Diagrama ctt
+	 * @return false si el nodo es hijo de otro nodo, true si no tiene un padre y por lo tanto es una raiz del diagrama
+	 */
+	private boolean isOnlyParent(int posicionNodo,Node padre){
 		for (int i = 0; i < padre.getChildNodes().getLength(); i++) {
-			if(padre.getChildNodes().item(i).getNodeName().equals(getVariables().NODE_LIST_RELATION_TASK))
+			if(padre.getChildNodes().item(i).getNodeName().equals(getVariables().getNodeListRelationTask()))
 			{
 				NamedNodeMap attribute=padre.getChildNodes().item(i).getAttributes();
-				String type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
-				if(type.equals(getVariables().CTT_AGREGATION))
+				Node type=attribute.getNamedItem(getVariables().getCttAttributeXsiType());
+				Node target=attribute.getNamedItem(getVariables().getCttAttributeTarget());
+				if(validateNodes(type, target)&&type.getNodeValue().equals(getVariables().getCttAgregation())
+						&&!"".equals(target.getNodeValue()))
 				{
-					String target=attribute.getNamedItem(getVariables().ATTRIBUTE_TARGET).getNodeValue();
-					if(!target.equals("")){
-						String[] splitSource=target.split("\\.");
+						String[] splitSource=target.getNodeValue().split("\\.");
 						int posicionNodoTarget=Integer.parseInt(splitSource[splitSource.length-1]);
 						if (posicionNodo==posicionNodoTarget) {
 							return false;
 						}
-					}
+					
 				}
 			}
 		}
@@ -63,11 +68,14 @@ public class OnlyParentCheck extends AbstractXmlCheck{
 		//ENE STE PUNTO SE PUDE DECIR QUE EN NODO EN LA "posicionNode" ES UNA RAÍZ DEL ÁRBOL
 		
 	}
-	
-	public void validateOnlyParent(Node node,int cantidad){
+	private boolean validateNodes(Node type,Node target){
+		return type!=null&&target!=null;
+	}
+	private void validateOnlyParent(Node node){
 		int contador=0;
+		int cantidad=0;
 		for(Node sibling=node.getFirstChild();sibling!= null;sibling=sibling.getNextSibling()){
-			if(sibling.getNodeName().equals(getVariables().NODE_LIST_TASK_CTT))
+			if(sibling.getNodeName().equals(getVariables().getNodeListTaskCtt()))
 			{
 				//SI ESTE LA CONDICION DENTOR DEL IF ES TRUE, SIBILING ES UN NODO RAIZ
 				if(isOnlyParent(contador,sibling.getParentNode()))
@@ -83,22 +91,22 @@ public class OnlyParentCheck extends AbstractXmlCheck{
 		
 		for (Node child=node.getFirstChild();child!=null;child=child.getNextSibling())
 		{
-			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().NODE_DIAGRAM_CTT))
+			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().getNodeDiagramCtt()))
 			{
-				NamedNodeMap attribute=child.getAttributes();
-				if(attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE)!=null){
-					String type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
-					if(type.equals(getVariables().NODE_TYPE_DIAGRAM_CTT)){
-						validateOnlyParent(child,cantidad);
-					}
+				if(getVariables().isValidateCttByType()){
+					isNodeValid(child);
 				}
 				else
-				validateOnlyParent(child,cantidad);
-			}
-			
+					validateOnlyParent(child);
+			}	
 		}
 	}
-
+	private void isNodeValid(Node node){
+		NamedNodeMap attribute=node.getAttributes();
+		Node type=attribute.getNamedItem(getVariables().getAttributeTypeDiagramCtt());
+		if(type!=null&&getVariables().getNodeTypeDiagramCtt().equals(type.getNodeValue()))
+			validateOnlyParent(node);	
+	}
 
 	@Override
 	public void validate(XmlSourceCode xmlSourceCode) {
@@ -106,7 +114,7 @@ public class OnlyParentCheck extends AbstractXmlCheck{
 
 		Document document = getWebSourceCode().getDocument(false);
 		if (document.getDocumentElement() != null) {
-			validateOnlyParent(document.getDocumentElement(),0);
+			validateOnlyParent(document.getDocumentElement());
 		}
 
 	}

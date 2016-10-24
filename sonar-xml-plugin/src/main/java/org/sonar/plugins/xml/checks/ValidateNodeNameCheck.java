@@ -33,25 +33,24 @@ import org.w3c.dom.Node;
  *
  */
 @Rule(key="ValidateNodeNameCheck",
-	name="Node names must be appropriate",
-	priority= Priority.MINOR)
-	@BelongsToProfile(title = CheckRepository.SONAR_WAY_PROFILE_NAME, priority = Priority.MINOR)
-	@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.ERRORS)
-	@SqaleConstantRemediation("5min")
+name="Node names must be appropriate",
+priority= Priority.MINOR)
+@BelongsToProfile(title = CheckRepository.SONAR_WAY_PROFILE_NAME, priority = Priority.MINOR)
+@SqaleSubCharacteristic(RulesDefinition.SubCharacteristics.ERRORS)
+@SqaleConstantRemediation("5min")
 public class ValidateNodeNameCheck extends AbstractXmlCheck{
 
 	public static final String MESSAGE="Change the name of the node, for a suitable with respect to the pattern names defined for: \n •	Cannot start number \n •	Only the following special characters are allowed: '-'', '_', '.' \n •	You cannot use space between words";
-	 
-	 
-	 private void validateNodeName(Node node){
-		
+
+
+	private void validateNodeName(Node node){
+
 		for(Node sibling=node.getFirstChild();sibling!= null;sibling=sibling.getNextSibling()){
-			if(sibling.getNodeName().equals(getVariables().NODE_LIST_TASK_CTT))
+			if(sibling.getNodeName().equals(getVariables().getNodeListTaskCtt()))
 			{
 				NamedNodeMap attribute=sibling.getAttributes();
-				if(attribute.getNamedItem(getVariables().ATTRIBUTE_NAME)!=null){
-					String name=attribute.getNamedItem(getVariables().ATTRIBUTE_NAME).getNodeValue();
-					if(!(name.equals("")||name==null)&&!name.matches("^[a-zA-Z][a-zA-Z0-9]*"))
+				Node name=attribute.getNamedItem(getVariables().getCttAttributeName());
+				if(name!=null&&!"".equals(name.getNodeValue())&&!name.getNodeValue().matches("^[a-zA-Z][a-zA-Z0-9]*")){
 					createViolation(getWebSourceCode().getLineForNode(sibling), MESSAGE);
 				}
 			}
@@ -59,30 +58,31 @@ public class ValidateNodeNameCheck extends AbstractXmlCheck{
 
 		for (Node child=node.getFirstChild();child!=null;child=child.getNextSibling())
 		{
-			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().NODE_DIAGRAM_CTT))
+			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().getNodeDiagramCtt()))
 			{
-				NamedNodeMap attribute=child.getAttributes();
-				if(attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE)!=null){
-					String type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
-					if(type.equals(getVariables().NODE_TYPE_DIAGRAM_CTT)){
-						validateNodeName(child);
-					}
+				if(getVariables().isValidateCttByType()){
+					isNodeValid(child);
 				}
-				validateNodeName(child);
+				else
+					validateNodeName(child);
 			}
 		}
 
 	}
-	
+	private void isNodeValid(Node node){
+		NamedNodeMap attribute=node.getAttributes();
+		Node type=attribute.getNamedItem(getVariables().getAttributeTypeDiagramCtt());
+		if(type!=null&&getVariables().getNodeTypeDiagramCtt().equals(type.getNodeValue()))
+			validateNodeName(node);	
+	}
 	@Override
 	public void validate(XmlSourceCode xmlSourceCode) {
-		// TODO Auto-generated method stub
 		setWebSourceCode(xmlSourceCode);
 
-	    Document document = getWebSourceCode().getDocument(false);
-	    if (document.getDocumentElement() != null) {
-	    	validateNodeName(document.getDocumentElement());
-	    }
+		Document document = getWebSourceCode().getDocument(false);
+		if (document.getDocumentElement() != null) {
+			validateNodeName(document.getDocumentElement());
+		}
 	}
 
 }

@@ -17,7 +17,6 @@
  */
 package org.sonar.plugins.xml.checks;
 
-import org.hibernate.cfg.CreateKeySecondPass;
 import org.sonar.api.server.rule.RulesDefinition;
 import org.sonar.check.BelongsToProfile;
 import org.sonar.check.Priority;
@@ -41,50 +40,61 @@ priority= Priority.BLOCKER)
 @SqaleConstantRemediation("15min")
 public class EmptySourceCheck  extends AbstractXmlCheck{
 
-	 public static final String MESSAGE="Check that the connection point to a node in both the source and target";
-	 
-	 private void validateAtrribiteSource(Node node){
-		
+	public static final String MESSAGE="Check that the connection point to a node in both the source and target";
+
+
+	private boolean validateNodeName(Node source, Node target){
+		if(source!=null||target!=null){
+			return "".equals(source.getNodeValue())||"".equals(target.getNodeValue());
+		}
+		else{
+			return true;
+		}
+	}	
+	private void validateAtrribiteSource(Node node){
+
 		for(Node sibling=node.getFirstChild();sibling!= null;sibling=sibling.getNextSibling()){
-			if(sibling.getNodeName().equals(getVariables().NODE_LIST_RELATION_TASK))
+			if(sibling.getNodeName().equals(getVariables().getNodeListRelationTask()))
 			{
 				NamedNodeMap attribute=sibling.getAttributes();
-				String source=attribute.getNamedItem(getVariables().ATTRIBUTE_SOURCE).getNodeValue();
-				String target=attribute.getNamedItem(getVariables().ATTRIBUTE_TARGET).getNodeValue();
-				if((source==""||source==null)||(target==""||target==null))
+				Node source=attribute.getNamedItem(getVariables().ATTRIBUTE_SOURCE);
+				Node target=attribute.getNamedItem(getVariables().ATTRIBUTE_TARGET);
+				if(validateNodeName(source, target))
 					createViolation(getWebSourceCode().getLineForNode(sibling), MESSAGE);
 			}
 		}
 
 		for (Node child=node.getFirstChild();child!=null;child=child.getNextSibling())
 		{
-			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().NODE_DIAGRAM_CTT))
+			if(child.getNodeType()==Node.ELEMENT_NODE&&child.getNodeName().equals(getVariables().getNodeDiagramCtt()))
 			{
-				NamedNodeMap attribute=child.getAttributes();
-				if(attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE)!=null){
-					String type=attribute.getNamedItem(getVariables().ATTRIBUTE_XSI_TYPE).getNodeValue();
-					if(type.equals(getVariables().NODE_TYPE_DIAGRAM_CTT)){
-						validateAtrribiteSource(child);
-					}
+				if(getVariables().isValidateCttByType()){
+					isNodeValid(child);
 				}
 				else
-				validateAtrribiteSource(child);
+					validateAtrribiteSource(child);
 			}
 		}
 
 	}
-	
+	private void isNodeValid(Node node){
+		NamedNodeMap attribute=node.getAttributes();
+		Node type=attribute.getNamedItem(getVariables().getAttributeTypeDiagramCtt());
+		if(type!=null&&getVariables().getNodeTypeDiagramCtt().equals(type.getNodeValue()))
+			validateAtrribiteSource(node);	
+	}
+
 	@Override
 	public void validate(XmlSourceCode xmlSourceCode) {
 		setWebSourceCode(xmlSourceCode);
 
-	    Document document = getWebSourceCode().getDocument(false);
-	    if (document.getDocumentElement() != null) {
-	    	validateAtrribiteSource(document.getDocumentElement());
-	    }
-		
+		Document document = getWebSourceCode().getDocument(false);
+		if (document.getDocumentElement() != null) {
+			validateAtrribiteSource(document.getDocumentElement());
+		}
+
 	}
-	
-	
+
+
 
 }
